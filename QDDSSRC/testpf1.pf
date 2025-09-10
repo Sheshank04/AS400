@@ -1,0 +1,5 @@
+                R TESTPFR
+                  STD_ID         5S 0
+                  STD_NAME      30A
+                  STD_CLASS      2S 0
+                K STD_ID

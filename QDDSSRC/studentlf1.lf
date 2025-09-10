@@ -1,0 +1,6 @@
+                R STUDENTR                  PFILE(SHESHANK/STUDENT)
+                  FNAME         10A
+                  LNAME         10A
+                  FULLNAME                  CONCAT(FNAME LNAME)
+                  ROLLNO         5A
+                K FULLNAME

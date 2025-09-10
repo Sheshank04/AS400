@@ -1,0 +1,4 @@
+                R PF1R                      PFILE(SHESHANK/PF1)
+                K EMPID
+                S EMPID                     CMP(GT 2)
+                O EMPNAME                   CMP(EQ 'A')

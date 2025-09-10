@@ -1,0 +1,7 @@
+                                            UNIQUE
+                R STUDENTR
+                  ROLLNO         5S 0
+                  FNAME         10A
+                  LNAME         10A
+                  GENDER         1A         VALUES('M' 'F' 'O')
+                K ROLLNO

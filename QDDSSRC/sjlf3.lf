@@ -1,0 +1,8 @@
+                                            JDFTVAL
+                R SJLFR                     JFILE(SPF2 SPF1)
+                J                           JOIN(1 2)
+                                            JFLD(NAME1 NAME)
+                  ID                        JREF(2)
+                  NAME
+                  GENDER
+                  TEL

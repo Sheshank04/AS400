@@ -1,0 +1,5 @@
+                R PF1R
+                  EMPID          5S 0       COLHDG('EMPLOYEE ID')
+                  EMPNAME       20A         COLHDG('EMPLOYEE NAME')
+                  EMPSAL         7S 2       COLHDG('EMPLOYEE SALARY')
+                K EMPID

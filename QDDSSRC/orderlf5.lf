@@ -1,0 +1,4 @@
+                R ORDERR                    PFILE(ORDER)
+                K ID
+                S ID                        CMP(LT '4')
+                O ID                        CMP(GT '2')
