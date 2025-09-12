@@ -3,6 +3,7 @@
      d time1           S               T   INZ(T'10.12.15')
      d time2           S               T   INZ(T'10.12.15')
      d InputChar       S             30A   INZ('$*****5.25***0000')
+     d String          S             20A   INZ('PIP.IO IBMPI')
      d TrimChar        S             30A
      D Input1          S              8  2
      D INPUT2          S              8  2
@@ -29,6 +30,8 @@
      C     Editcode_1    DSPLY
      C
      C                   Eval      TrimChar = %Trim(InputChar)
+     C     TrimChar      DSPLY
+     C                   Eval      TrimChar = %Trim(String: 'PI ')
      C     TrimChar      DSPLY
      C                   Eval      TrimChar = %Trim(InputChar : '0 ')
      C     TrimChar      DSPLY

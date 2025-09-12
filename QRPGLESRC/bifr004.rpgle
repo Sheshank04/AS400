@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/09                                          //
+     A* CREATE DATE......: 2025/09/11                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %dec combinations                                   //
+     A* DESCRIPTION......: %scanrpl()                                          //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -13,44 +13,18 @@
 
 **free
 
-// Variable Description
+// Variable declaration
 
-dcl-s number1 packed(7:2);
-dcl-s number2 packed(5:0);
-dcl-s number3 packed(7:3);
-dcl-s number4 packed(5:2);
-dcl-s number5 packed(6:2);
-dcl-s number6 packed(4:2);
-dcl-s char1 char(10) inz('600');
-dcl-s num packed(6:2);
-// dcl-s number7 packed(3:4);
+dcl-s searchString char(5) inz('Hello');
+dcl-s replaceString char(3) inz('IBM');
+dcl-s mainString char(15) inz('Hello World');
 
 // Mainline Calculation
 
-number1 = %dec(12345.6);
-dsply (%char(number1));
+mainString = %scanrpl(searchString: replaceString: mainString);
+dsply mainString;
 
-number2 = %dec(1234 : 5: 0);
-dsply (%char(number2));
-
-number3 = %dec(123.45 : 7: 3);
-dsply (%char(number3));
-
-number4 = %dec(25 :5 : 2);
-dsply (%char(number4));
-
-number5 = %dec('1234.5' :6 :2);
-dsply (%char(number5));
-
-number6 = %dec('99' :4 :2);
-dsply (%char(number6));
-
-num = %dec(char1 : 6: 2);
-dsply (%char(num));
-
-// number7 = %dec('99.23' :3 :4);
-// dsply (%char(number7));
+ mainstring = %replace(replacestring: mainString: 0);
+ dsply mainString;
 
 *inlr = *on;
-
-
