@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/16                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: %split() and %subarr() and %split                   //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -13,40 +13,38 @@
 
 **free
 
-// Variable Declaration
+// Variable  Declaration
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+dcl-s array1 char(10) dim(5);
+dcl-s array2 char(10) dim(5);
+dcl-s array3 char(10) dim(5);
+dcl-s count packed(2) inz(1);
 
 // Mainline Calculation
 
-time1 = %time();
+// %list
 
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
+array1 = %list('a' : 'b' : 'c' : 'd' : 'e');
 
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
+for count = 1 to 5;
+    dsply array1(count);
+endfor;
 
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
+// %split
 
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
+array2 = %split('a b c.d e' : ' .');
 
-dsply (%char(hour) + '.' + %char(minute));
+for count = 1 to 5;
+    dsply array2(count);
+endfor;
 
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
+// %subarr
 
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+array3 = %subarr(array2 : 2: 3);
+
+for count = 1 to 5;
+    dsply array3(count);
+endfor;
+
 
 *inlr = *on;

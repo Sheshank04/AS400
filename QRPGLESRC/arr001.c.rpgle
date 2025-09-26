@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/16                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: Compile Time Array                                  //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -15,38 +15,28 @@
 
 // Variable Declaration
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+dcl-s months char(10) dim(24) ctdata perrcd(2);
+dcl-s counter packed(2) inz(1);
 
 // Mainline Calculation
 
-time1 = %time();
-
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
-
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
-
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
-
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
-
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+// for loop
+for counter = 1 to 12 by 1;
+    dsply months(counter);
+endfor;
 
 *inlr = *on;
+
+**ctdata months
+January   31
+February  28
+March     31
+April     30
+May       31
+June      30
+July      31
+August    31
+September 30
+October   31
+November  30
+December  31

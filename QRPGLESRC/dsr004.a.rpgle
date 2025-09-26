@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/18                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: Use Overlay                                         //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -13,40 +13,33 @@
 
 **free
 
+// DS Declaration
+
+dcl-ds monthsInfo qualified;
+    field1 char(120);
+    field2 char(24);
+    month char(10) dim(12) overlay(field1);
+    days char(2) dim(12) overlay(field2);
+end-ds;
+
 // Variable Declaration
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+dcl-s i packed(2:0) inz(1);
 
 // Mainline Calculation
 
-time1 = %time();
+monthsInfo.field1 = 'January   February  March     April     May       '+
+                    'June      July      August    September October   '+
+                    'November  December';
 
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
+monthsInfo.field2 = '312831303130313130313031';
 
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
+for i = 1 to 12;
+    dsply monthsInfo.month(i);
+    dsply monthsInfo.days(i);
+endfor;
 
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
-
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
-
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+//dsply monthsInfo;
 
 *inlr = *on;
+

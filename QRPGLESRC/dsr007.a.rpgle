@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/18                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: Data Structure(Data Area)                           //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -13,40 +13,18 @@
 
 **free
 
-// Variable Declaration
-
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+// Data Structure Declaration
+dcl-ds DS_DataArea dtaara('SHESHANK/DA001');
+    First char(10) pos(1);
+    Last char(20) pos(11);
+    Fld char(20) pos(31);
+end-ds;
 
 // Mainline Calculation
+in DS_DataArea;
+dsply DS_DataArea;
 
-time1 = %time();
-
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
-
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
-
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
-
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
-
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+Fld = 'Ibmi Intern 2025';
+dsply DS_DataArea;
 
 *inlr = *on;

@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/18                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: Data Structure(MultiOccurence)                      //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -13,40 +13,31 @@
 
 **free
 
-// Variable Declaration
+dcl-s occurence zoned(2);
+dcl-ds Full qualified occurs(5) inz;
+    Name char(10);
+    Age zoned(2);
+end-ds;
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+%occur(full) = 1;
+    Full.Name = 'Sheshank';
+    Full.Age = 21;
+dsply Full.name;
+dsply %char(Full);
 
-// Mainline Calculation
+%occur(full) = 2;
+    Full.Name = 'AMAN';
+    Full.Age = 25;
+dsply Full.Name;
+dsply %char(Full);
 
-time1 = %time();
+%occur(full) = 1;
+    dsply Full.Age;
 
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
+%occur(full) = 2;
+    dsply Full.Age;
 
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
-
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
-
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
-
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+%occur(full) = 3;
+    dsply Full.Age;
 
 *inlr = *on;

@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/16                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: Runtime Array                                       //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -15,38 +15,15 @@
 
 // Variable Declaration
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+dcl-s array char(10) dim(7);
+dcl-s counter packed(2) inz(1);
 
 // Mainline Calculation
 
-time1 = %time();
-
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
-
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
-
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
-
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
-
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+// for loop
+for counter = 1 to 7 by 1;
+    array(counter) = %char(counter);
+    dsply array(counter);
+endfor;
 
 *inlr = *on;

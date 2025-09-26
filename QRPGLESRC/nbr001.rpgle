@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/17                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: Nesting BIF                                         //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -15,38 +15,39 @@
 
 // Variable Declaration
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+// 1
+dcl-s fullName varchar(30) inz('  Sheshank Srivastava');
+dcl-s firstName char(10);
+
+// 2
+dcl-s dob date inz(d'2003-11-04');
+//dcl-s today date;
+dcl-s age packed(3:0);
+
+// 3
+dcl-s sentence char(30) inz('I love AS400');
+dcl-s newSentence char(20);
+
+// 4
+//dcl-s ts timestamp;
+dcl-s time1 char(8);
 
 // Mainline Calculation
 
-time1 = %time();
+// 1
+firstName = %trim(%subst(fullName: %scan(' ': fullName): %scanr(' ':fullname)));
+dsply firstname;
 
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
+// 2
+age = %diff(%date(): dob: *years);
+dsply %char(age);
 
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
+// 3
+newSentence = %replace('IBM i': sentence: %scan('AS400': sentence): 5);
+dsply newSentence;
 
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
-
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
-
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+// 4
+time1 = %subst(%char(%timestamp()): 12: 5);
+dsply time1;
 
 *inlr = *on;

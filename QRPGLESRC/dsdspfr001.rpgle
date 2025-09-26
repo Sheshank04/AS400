@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/22                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: Data Structure(Indicator)                           //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -13,40 +13,43 @@
 
 **free
 
-// Variable Declaration
+// File Declaration using INDDS
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+dcl-f idsdspf002 workstn INDDS(DS1);
 
-// Mainline Calculation
+// Data Structure Declaration
 
-time1 = %time();
+dcl-ds DS1;
+     Exit Ind Pos(03);
+     Red Ind Pos(10);
+     Blue Ind Pos(20);
+end-ds;
 
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
+     //Do-While Loop
 
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
+     dow Exit = *off;
+          exfmt rec001;
+          select;
 
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
+          when color = 'R';
+               exsr clearall;
+               Red = *on;
 
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
+          when color = 'B';
+               exsr clearall;
+               Blue = *on;
 
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+          other;
+               Red = *on;
+               Blue = *on;
+          endsl;
+     enddo;
 
 *inlr = *on;
+
+// Subroutine Begin
+
+Begsr clearall;
+     Reset Red;
+     Reset Blue;
+Endsr;

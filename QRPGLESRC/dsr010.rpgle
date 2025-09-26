@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/19                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: max and min array                                   //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -13,40 +13,27 @@
 
 **free
 
-// Variable Declaration
+// DS Declaration
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+dcl-ds Info qualified dim(10);
+    name char(10);
+    id char(10);
+    dcl-ds address;
+        haddr char(15);
+        oaddr char(15);
+    end-ds;
+end-ds;
 
-// Mainline Calculation
+Info(1).name = 'Sheshank';
+Info(1).id = '00001';
+Info(1).address.haddr = 'Lucknow';
+Info(1).address.oaddr = 'Jaipur';
 
-time1 = %time();
-
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
-
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
-
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
-
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
-
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+//dsply Info;
+dsply Info(1);
+dsply Info(1).address;
+//dsply address;
+//dsply Info.address;
 
 *inlr = *on;
+

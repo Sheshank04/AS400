@@ -1,6 +1,6 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/17                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
      A* DESCRIPTION......: %time()                                             //
      A* -----------------------------------------------------------------------//
@@ -15,38 +15,46 @@
 
 // Variable Declaration
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+dcl-s time_a char(8);
+dcl-s time_b packed(8:0);
+dcl-s time time inz(T'12.45.00');
+dcl-s time_n packed(6:0) inz(121545);
+dcl-s time_hms char(8) inz('12:35:01');
+dcl-s time_usa char(8) inz('11:39 AM');
 
 // Mainline Calculation
 
-time1 = %time();
+time_a = %char(%time():*ISO);
+dsply time_a;
 
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
+time_b = %dec(%char(%time():*ISO0):8:0);
+dsply time_b;
 
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
+time_a = %char(%time():*HMS);
+dsply time_a;
 
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
+time_a = %char(%time():*USA);
+dsply time_a;
 
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
+time_a = %char(%time(time_n):*ISO);
+dsply time_a;
 
-dsply (%char(hour) + '.' + %char(minute));
+time_a = %char(%time(time_n: *ISO):*HMS);
+dsply time_a;
 
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
+time_a = %char(%time(time_n):*USA);
+dsply time_a;
 
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+time_a = %char(%time(time_hms:*hms):*ISO);
+dsply time_a;
+
+time_a = %char(%time(time_hms:*hms):*USA);
+dsply time_a;
+
+time_a = %char(%time(time_usa:*usa):*ISO);
+dsply time_a;
+
+time_a = %char(%time(time_usa:*usa):*HMS);
+dsply time_a;
 
 *inlr = *on;

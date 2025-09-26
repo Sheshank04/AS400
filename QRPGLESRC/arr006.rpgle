@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/16                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: max and min array                                   //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -13,40 +13,29 @@
 
 **free
 
-// Variable Declaration
+// Variable  Declaration
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+dcl-s Array Packed(5) Dim(5);
+dcl-s max Packed(5);
+dcl-s min Packed(5);
 
 // Mainline Calculation
 
-time1 = %time();
+Array(1)=10520;
+Array(2)=10514;
+Array(3)=25148;
+Array(4)=12154;
+Array(5)=35531;
 
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
+// %MAXARR
 
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
+max = %MAXARR(Array);
+dsply %char(max);
+dsply ('Maximum number of array is ' + %char(Array(max)));
 
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
-
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
-
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
+// %MINARR
+min = %MINARR(Array);
+dsply %char(min);
+dsply ('Minimum number of array is ' + %char(Array(min)));
 
 *inlr = *on;

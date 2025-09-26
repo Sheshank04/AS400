@@ -66,7 +66,7 @@ dsply %char(num1);
 num2 = %dec(%char(%date(charA:*ymd/):*cymd0):7:0);
 dsply %char(num2);
 
-num3 = %dec(%char(%date(charA:*ymd/):*iso0):7:0);
+num3 = %dec(%char(%date(charA:*ymd/):*iso0):8:0);
 dsply %char(num3);
 
 num4 = %dec(%char(%date(charA:*ymd/):*mdy0):7:0);
@@ -81,7 +81,7 @@ dsply %char(num1);
 num2 = %dec(%char(%date(charB:*usa/):*cymd0):7:0);
 dsply %char(num2);
 
-num3 = %dec(%char(%date(charB:*usa/):*iso0):7:0);
+num3 = %dec(%char(%date(charB:*usa/):*iso0):8:0);
 dsply %char(num3);
 
 num4 = %dec(%char(%date(charB:*usa/):*mdy0):7:0);
@@ -96,7 +96,7 @@ dsply %char(num1);
 num2 = %dec(%char(%date(charC:*mdy/):*cymd0):7:0);
 dsply %char(num2);
 
-num3 = %dec(%char(%date(charC:*mdy/):*iso0):7:0);
+num3 = %dec(%char(%date(charC:*mdy/):*iso0):8:0);
 dsply %char(num3);
 
 num4 = %dec(%char(%date(charC:*mdy/):*mdy0):7:0);
@@ -118,19 +118,19 @@ dsply charC;
 
 // date to numeric
 
-num1 = %dec(%char(dateA:*ymd/):6:0);
+num1 = %dec(%char(dateA:*ymd0):6:0);
 dsply %char(num1);
 
-num2 = %dec(%char(dateA:*cymd/):7:0);
+num2 = %dec(%char(dateA:*cymd0):7:0);
 dsply %char(num2);
 
-num3 = %dec(%char(dateA:*iso-):8:0);
+num3 = %dec(%char(dateA:*iso0):8:0);
 dsply %char(num3);
 
-num4 = %dec(%char(dateA:*mdy/):6:0);
+num4 = %dec(%char(dateA:*mdy0):6:0);
 dsply %char(num4);
 
-num5 = %dec(%char(dateA:*usa/):8:0);
+num5 = %dec(%char(dateA:*usa0):8:0);
 dsply %char(num5);
 
 // numeric to character

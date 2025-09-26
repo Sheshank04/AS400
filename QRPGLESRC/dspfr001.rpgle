@@ -1,8 +1,8 @@
      A* -----------------------------------------------------------------------//
      A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/09/12                                          //
+     A* CREATE DATE......: 2025/09/22                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: %time()                                             //
+     A* DESCRIPTION......: DSPF RPG Code                                       //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
@@ -13,40 +13,38 @@
 
 **free
 
-// Variable Declaration
+// File Declaration
 
-dcl-s time1 time;
-dcl-s timestamp1 timestamp;
-dcl-s date1 date;
-dcl-s result packed(25:5);
-dcl-s hour packed(2:0);
-dcl-s minute packed(2:0);
-dcl-s char1 char(30);
+dcl-f idsdspf001 workstn;
 
-// Mainline Calculation
+     //Do-While Loop
 
-time1 = %time();
+     dow *In03 = *off;
 
-date1 = %date();
-timestamp1 = %timestamp();
-dsply timestamp1;
+          exfmt rec001;
+          select;
 
-result = %subdt(timestamp1: *seconds: 5: 3);
-dsply %char(result);
+          when color = 'R';
+               exsr clearall;
+               *In10 = *on;
 
-result = %subdt(timestamp1: *ms);
-dsply %char(result);
+          when color = 'B';
+               exsr clearall;
+               *In20 = *on;
 
-hour = %subdt(timestamp1: *h);
-minute = %subdt(timestamp1: *mn);
+          other;
+               *In10 = *on;
+               *In20 = *on;
 
-dsply (%char(hour) + '.' + %char(minute));
-
-char1 = %char(%timestamp());
-char1 = %subst(char1: 12: 5);
-dsply char1;
-
-// result = %subdt(timestamp1: *minutes: 5: 3);
-// dsply %char(result);
-
+          endsl;
+     enddo;
 *inlr = *on;
+
+// Subroutine
+
+Begsr clearall;
+
+     Reset *In10;
+     Reset *In20;
+
+Endsr;
