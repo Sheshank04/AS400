@@ -1,0 +1,8 @@
+                                            UNIQUE
+                R UDR
+                  USERID         5S 0
+                  USERNAME      30A
+                  USERDOB         L
+                  USERAGE        3S 0
+                  USERPHNNO     10A
+                K USERID

@@ -1,0 +1,54 @@
+     A*%%TS  SD  20250924  075852  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      INDARA
+     A          R REC001
+     A*%%TS  SD  20250924  033854  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF05(05 'Refresh')
+     A                                      OVERLAY
+     A                                  5  2'Arithmetic Operation'
+     A                                  7  3'1.'
+     A                                  7 11'Addition'
+     A                                  9  3'2.'
+     A                                  9 11'Subtraction'
+     A                                 11  3'3.'
+     A                                 11 11'Multiplication'
+     A                                 13  3'4.'
+     A                                 13 11'Division'
+     A                                  1 69USER
+     A                                  2 71DATE
+     A                                      EDTCDE(Y)
+     A                                  3 71TIME
+     A                                 23  2'F3 = Exit'
+     A                                      COLOR(BLU)
+     A                                 18  2'Select Option:'
+     A            OPT            1S 0I 18 17
+     A            MSG1          50A  O 21  2COLOR(WHT)
+     A                                 23 13'F5 = Refesh'
+     A                                      COLOR(BLU)
+     A          R REC002
+     A*%%TS  SD  20250924  075852  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF12(12 'Cancel')
+     A                                      CF05(05 'Refresh')
+     A                                      OVERLAY
+     A                                  1 69USER
+     A                                  2 71DATE
+     A                                      EDTCDE(Y)
+     A                                  3 71TIME
+     A                                  5  2'Arithmetic Operation'
+     A                                  7  3'Num 1.:'
+     A            NUM1           5S 0B  7 12
+     A                                  9  3'Num 2.:'
+     A            NUM2           5S 0B  9 12
+     A                                 12  3'Result:'
+     A            RESULT         6  0O 12 12EDTCDE(Z)
+     A                                      DSPATR(CS)
+     A                                      COLOR(YLW)
+     A            MSG2          50A  O 21  2COLOR(WHT)
+     A                                 23  2'F3 = Exit  F5 = Refresh  F12 = Can-
+     A                                      cel'
+     A                                      COLOR(BLU)
+     A                                  5 23'-'
+     A            MSG3          15A  O  5 25COLOR(RED)

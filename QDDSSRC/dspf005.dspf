@@ -1,0 +1,16 @@
+     A*%%TS  SD  20250922  073425  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A          R REC001
+     A*%%TS  SD  20250922  073425  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF05(05 'Refresh')
+     A                                  1  2USER
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  1 32'Palindrome or Not'
+     A                                  7 28'Enter a Name :'
+     A            STR           10   I  7 44
+     A            MSG           20   O 10 31
+     A                                 23  2'F3 = Exit  F5 = Refresh'

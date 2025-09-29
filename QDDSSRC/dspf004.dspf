@@ -1,0 +1,19 @@
+     A*%%TS  SD  20250924  013324  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A          R REC001
+     A*%%TS  SD  20250924  013324  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF05(05 'Refresh')
+     A                                  1  2USER
+     A                                  2  2DATE
+     A                                      EDTCDE(Y)
+     A                                  3  2TIME
+     A                                  1 25'Celsius To Fahrenheit Converter'
+     A                                  7 23'Enter Celsius........:'
+     A                                 10 23'Fahrenheit...........:'
+     A                                 23 27' '
+     A                                 23  2'F3 = Exit  F5 = Refresh'
+     A                                      COLOR(BLU)
+     A            CL             6Y 2B  7 47EDTWRD('    .  ')
+     A            FR             6Y 2O 10 47EDTWRD('    .  ')

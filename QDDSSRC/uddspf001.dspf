@@ -1,0 +1,121 @@
+     A*%%TS  SD  20250929  031009  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      INDARA
+     A          R REC001
+     A*%%TS  SD  20250929  031009  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF05(05 'Refresh')
+     A                                      CF06(06 'Update')
+     A                                      CF07(07 'Delete')
+     A                                      CF08(08 'Insert')
+     A                                  1  2USER
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  3 35'USER DETAILS'
+     A                                 23  2'F3 = Exit  F5 = Refresh  F6 = Upda-
+     A                                      te  F7 = Delete  F8 = Insert'
+     A                                      COLOR(BLU)
+     A            MSG1          70A  O 24  2COLOR(WHT)
+     A                                  8 11'User Id..........:'
+     A                                      COLOR(WHT)
+     A                                 10 11'User Name........:'
+     A                                      COLOR(WHT)
+     A                                 12 11'User DOB.........:'
+     A                                      COLOR(WHT)
+     A                                 14 11'User Age.........:'
+     A                                      COLOR(WHT)
+     A                                 16 11'User Phone Number:'
+     A                                      COLOR(WHT)
+     A            DUSERID        5S 0B  8 31
+     A  10                                  DSPATR(RI)
+     A  20                                  DSPATR(PC)
+     A            DUSERNAME     30A  O 10 31
+     A            DUSERDOB      10A  O 12 31
+     A            DUSERAGE       3Y 0O 14 31EDTCDE(Z)
+     A            DUSERPHNNO    10A  O 16 31
+     A          R INSERT
+     A*%%TS  SD  20250926  033336  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF05(05 'Refresh')
+     A                                      CF12(12 'Cancel')
+     A                                  1  2USER
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A            MSG2          70A  O 24  2COLOR(WHT)
+     A                                  8 11'User Id..........:'
+     A                                      COLOR(WHT)
+     A                                 10 11'User Name........:'
+     A                                      COLOR(WHT)
+     A                                 12 11'User DOB.........:'
+     A                                      COLOR(WHT)
+     A                                 14 11'User Age.........:'
+     A                                      COLOR(WHT)
+     A                                 16 11'User Phone Number:'
+     A                                      COLOR(WHT)
+     A                                  3 35'Insert Data'
+     A                                      DSPATR(UL)
+     A            DUSERID        5Y 0B  8 31
+     A  21                                  DSPATR(RI)
+     A  31                                  DSPATR(PC)
+     A                                      EDTCDE(Z)
+     A                                      DSPATR(UL)
+     A            DUSERNAME     30A  B 10 31
+     A  22                                  DSPATR(RI)
+     A  32                                  DSPATR(PC)
+     A            DUSERDOB      10A  B 12 31
+     A  23                                  DSPATR(RI)
+     A  33                                  DSPATR(PC)
+     A            DUSERAGE       3S 0B 14 31
+     A  24                                  DSPATR(RI)
+     A  34                                  DSPATR(PC)
+     A            DUSERPHNNO    10A  B 16 31
+     A  25                                  DSPATR(RI)
+     A  35                                  DSPATR(PC)
+     A                                 23  2'F3 = Exit  F5 = Refresh  F12 = Can-
+     A                                      cel'
+     A                                      COLOR(BLU)
+     A                                 12 42'(YYYY-MM-DD)'
+     A                                      COLOR(BLU)
+     A          R UPDATE
+     A*%%TS  SD  20250929  031009  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF05(05 'Refresh')
+     A                                      CF12(12 'Cancel')
+     A                                  1  2USER
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A            MSG3          70A  O 24  2COLOR(WHT)
+     A                                  8 11'User Id..........:'
+     A                                      COLOR(WHT)
+     A                                 10 11'User Name........:'
+     A                                      COLOR(WHT)
+     A                                 12 11'User DOB.........:'
+     A                                      COLOR(WHT)
+     A                                 14 11'User Age.........:'
+     A                                      COLOR(WHT)
+     A                                 16 11'User Phone Number:'
+     A                                      COLOR(WHT)
+     A            DUSERNAME     30A  B 10 31
+     A  22                                  DSPATR(RI)
+     A  32                                  DSPATR(PC)
+     A            DUSERDOB      10A  B 12 31
+     A  23                                  DSPATR(RI)
+     A  33                                  DSPATR(PC)
+     A            DUSERAGE       3S 0B 14 31
+     A  24                                  DSPATR(RI)
+     A  34                                  DSPATR(PC)
+     A            DUSERPHNNO    10A  B 16 31
+     A  25                                  DSPATR(RI)
+     A  35                                  DSPATR(PC)
+     A                                 23  2'F3 = Exit  F5 = Refresh  F12 = Can-
+     A                                      cel'
+     A                                      COLOR(BLU)
+     A                                  3 35'Update Data'
+     A                                      DSPATR(UL)
+     A            DUSERID        5Y 0O  8 31EDTCDE(Z)
+     A                                 12 42'(YYYY-MM-DD)'
+     A                                      COLOR(BLU)

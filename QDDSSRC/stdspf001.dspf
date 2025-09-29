@@ -1,0 +1,63 @@
+     A*%%TS  SD  20250926  074058  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      INDARA
+     A          R REC001
+     A*%%TS  SD  20250926  074058  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF05(05 'Refresh')
+     A                                  1  2USER
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  3 25'Dropping Letters Alphabitically'
+     A                                      DSPATR(UL)
+     A                                  7 28'Input String :'
+     A            INSTR         10A  B  7 43
+     A  10                                  DSPATR(RI)
+     A  10                                  DSPATR(PC)
+     A            WRKSTR1       10A  O 11 16
+     A  21                                  DSPATR(ND)
+     A            OUTSTR1       10A  O 11 56
+     A  21                                  DSPATR(ND)
+     A                                 23  2'F3 = Exit'
+     A                                      COLOR(BLU)
+     A            MSG           70A  O 24  2COLOR(WHT)
+     A            WRKSTR3       10A  O 13 16
+     A  23                                  DSPATR(ND)
+     A            WRKSTR2       10A  O 12 16
+     A  22                                  DSPATR(ND)
+     A            WRKSTR4       10A  O 14 16
+     A  24                                  DSPATR(ND)
+     A            WRKSTR5       10A  O 15 16
+     A  25                                  DSPATR(ND)
+     A            WRKSTR6       10A  O 16 16
+     A  26                                  DSPATR(ND)
+     A            WRKSTR7       10A  O 17 16
+     A  27                                  DSPATR(ND)
+     A            WRKSTR8       10A  O 18 16
+     A  28                                  DSPATR(ND)
+     A            WRKSTR9       10A  O 19 16
+     A  29                                  DSPATR(ND)
+     A            WRKSTR10      10A  O 20 16
+     A  30                                  DSPATR(ND)
+     A            OUTSTR2       10A  O 12 56
+     A  22                                  DSPATR(ND)
+     A            OUTSTR3       10A  O 13 56
+     A  23                                  DSPATR(ND)
+     A            OUTSTR4       10A  O 14 56
+     A  24                                  DSPATR(ND)
+     A            OUTSTR5       10A  O 15 56
+     A  25                                  DSPATR(ND)
+     A            OUTSTR6       10A  O 16 56
+     A  26                                  DSPATR(ND)
+     A            OUTSTR7       10A  O 17 56
+     A  27                                  DSPATR(ND)
+     A            OUTSTR8       10A  O 18 56
+     A  28                                  DSPATR(ND)
+     A            OUTSTR9       10A  O 19 56
+     A  29                                  DSPATR(ND)
+     A            OUTSTR10      10A  O 20 56
+     A  30                                  DSPATR(ND)
+     A                                 23 13'F5 = Refresh'
+     A                                      COLOR(BLU)

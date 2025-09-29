@@ -1,0 +1,32 @@
+     A*%%TS  SD  20250923  085425  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A          R REC001
+     A*%%TS  SD  20250923  085425  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF05(05 'Refresh')
+     A                                  1  2USER
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  1 29'Order Table Information'
+     A                                  6  2'Order Id.......:'
+     A                                      COLOR(WHT)
+     A                                  8  2'Customer Id....:'
+     A                                      COLOR(WHT)
+     A                                 10  2'Order Date.....:'
+     A                                      COLOR(WHT)
+     A                                 12  2'Item Id........:'
+     A                                      COLOR(WHT)
+     A                                 14  2'Quantity.......:'
+     A                                      COLOR(WHT)
+     A            OID            5A  B  6 20
+     A            CID            7A  O  8 20
+     A            ODATE         10A  O 10 20
+     A            IID            6   O 12 20
+     A            IQUANTITY      3A  O 14 20
+     A                                 23  2'F3 = Exit  F5 = Refresh'
+     A                                      COLOR(BLU)
+     A            MSG           70A  O 21  2COLOR(WHT)
+     A                                 10 31'(YYYY-MM-DD)'
+     A                                      COLOR(BLU)

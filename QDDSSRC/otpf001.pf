@@ -1,0 +1,8 @@
+                                            UNIQUE
+                R OTR
+                  ORDERID        5A
+                  CUSTOMERID     7A
+                  ORDERDATE       L
+                  ITEMID         6A
+                  QUANTITY       3A
+                K ORDERID

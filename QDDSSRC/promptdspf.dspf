@@ -1,0 +1,36 @@
+     A*%%TS  SD  20250929  034002  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A          R SCREEN
+     A*%%TS  SD  20250929  034002  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF03(03 'Exit')
+     A                                      CF04(04 'Prompt')
+     A                                      OVERLAY
+     A                                  1 34'Programmers.ai'
+     A                                  1  2USER
+     A                                  1 50' '
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  6 12'City :'
+     A            CITY          20A  B  6 19
+     A                                  6 41'(F4 = Prompt)'
+     A                                      COLOR(BLU)
+     A                                 23  2'F3 = Exit'
+     A                                      COLOR(BLU)
+     A            MSG           70A  O 24  2COLOR(WHT)
+     A          R POPUP
+     A*%%TS  SD  20250929  034002  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      CF12(12 'Cancel')
+     A                                      OVERLAY
+     A                                      WINDOW(7 18 11 20)
+     A                                  1  5'Select'
+     A                                  1 12'City'
+     A                                  3  3'1. Mumbai'
+     A                                  4  3'2. Delhi'
+     A                                  5  3'3. Jaipur'
+     A                                  6  3'4. Lucknow'
+     A                                  8  4'Selection :'
+     A            OPTION         1A  B  8 16
+     A                                 10  2'F12 = Cancel'
+     A                                      COLOR(BLU)
