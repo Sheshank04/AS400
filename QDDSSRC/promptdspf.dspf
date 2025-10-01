@@ -1,11 +1,16 @@
-     A*%%TS  SD  20250929  034002  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20250929  052856  SHESHANK    REL-V7R5M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(24 80 *DS3)
+     A                                      INDARA
      A          R SCREEN
      A*%%TS  SD  20250929  034002  SHESHANK    REL-V7R5M0  5770-WDS
      A                                      CF03(03 'Exit')
      A                                      CF04(04 'Prompt')
+     A                                      RTNCSRLOC(&RCD &FLD &POS)
      A                                      OVERLAY
+     A            FLD           10A  H
+     A            RCD           10A  H
+     A            POS            4S 0H
      A                                  1 34'Programmers.ai'
      A                                  1  2USER
      A                                  1 50' '
@@ -20,8 +25,9 @@
      A                                      COLOR(BLU)
      A            MSG           70A  O 24  2COLOR(WHT)
      A          R POPUP
-     A*%%TS  SD  20250929  034002  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20250929  052856  SHESHANK    REL-V7R5M0  5770-WDS
      A                                      CF12(12 'Cancel')
+     A                                      CF03(03 'Exit')
      A                                      OVERLAY
      A                                      WINDOW(7 18 11 20)
      A                                  1  5'Select'
