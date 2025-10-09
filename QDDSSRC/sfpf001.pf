@@ -1,0 +1,7 @@
+                                            UNIQUE
+                R SFPFR
+                  USERID         5S 0       COLHDG('USER ID')
+                  USERNAME      25A         COLHDG('USER NAME')
+                  USERDEP       10A         COLHDG('USER DEPARTMENT')
+                  USERMOBNO     10A         COLHDG('USER MOBILE NO.')
+                K USERID

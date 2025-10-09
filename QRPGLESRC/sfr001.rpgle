@@ -31,13 +31,11 @@
           SFLCLR IND POS(33);
           SFLEND IND POS(34);
           optionRIPC IND POS(50);
-          userIdRIPC IND POS(51);
           userNameRIPC IND POS(52);
           userDepartmentRIPC IND POS(53);
           userMobileNoRIPC IND POS(54);
-          userIdPR IND POS(60);
-          userIdUL IND POS(61);
-          userDetailPR IND POS(62);
+          wOptRIPC IND POS(55);
+          userDetailPR IND POS(61);
         End-DS;
 
         Dcl-DS infds1;
@@ -99,11 +97,6 @@
 
           Dow Exit = *Off;
 
-            If Cancel = *On;
-              Cancel = *Off;
-              Leave;
-            Endif;
-
             Clear OPT;
             SFLDSP = *On;
             SFLDSPCTL = *On;
@@ -119,6 +112,10 @@
             Clear MSG1;
 
             Select;
+            When Cancel = *On;
+              Cancel = *off;
+              Leave;
+
             When Refresh = *On;
               Exsr Refresh_Subfile;
 
@@ -160,6 +157,10 @@
 
             When OPT = '5';
               Exsr Display_User_Detail;
+              If OPT = '5';
+                Clear OPT;
+                Exsr Refresh_Subfile;
+              Endif;
 
             Other;
               If OPT <> *BLANKS;
@@ -179,21 +180,25 @@
         Endsr;
 
         //=====================================================================//
-        // Edit_User_Detail                                                    //
+        // Add_User_Detail                                                     //
         //---------------------------------------------------------------------//
-        Begsr Edit_User_Detail;
+        Begsr Add_User_Detail;
 
-          HEADING = 'Edit User Details';
-          Exsr Display_Data;
+          HEADING = 'Add User Details';
+          FUNFLD = 'F3=Exit          F5=Refresh       F12=Cancel';
+          Exsr Clear_All;
+          Clear MSG2;
+          Exsr Reset_Indicators;
+          Setll *Hival SFPF001;
+            If USERID >= 1;
+              DUSERID = USERID + 1;
+            Else;
+              DUSERID = 1;
+          Endif;
 
           Dow Exit = *Off;
 
-            userIdUL= *On;
-            userIdPR = *On;
             EXFMT USRDTL;
-
-            Clear MSG2;
-            Exsr Reset_Indicators;
 
             If Exit = *On;
               Leave;
@@ -201,10 +206,88 @@
 
             If Refresh = *On;
               Refresh = *Off;
-              DUSERID = SUSERID;
-              DUSERNAME = SUSERNAME;
-              DUSERDEP = SUSERDEP;
-              DUSERMOBNO = SUSERMOBNO;
+              Clear DUSERNAME;
+              Clear DUSERDEP;
+              Clear DUSERMOBNO;
+              Clear MSG2;
+              iter;
+            Endif;
+
+            If Cancel = *On;
+              Cancel = *Off;
+              Leave;
+            Endif;
+
+            If UPDATE1 = *Off;
+            Select;
+            When DUSERNAME = *Blanks And
+                 DUSERDEP = *Blanks And DUSERMOBNO = *Blanks;
+
+              userNameRIPC = *On;
+              MSG2 = 'Enter User Id, Name, Department & Mobile Number';
+
+            When DUSERNAME = ' ' OR
+              (%check('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
+              :%trim(DUSERNAME)) <> 0)
+              OR (%subst(DUSERNAME:1:1) < 'A');
+
+              userNameRIPC = *On;
+              MSG2 = 'Enter or Check User Name';
+
+            When DUSERDEP = ' ';
+              userDepartmentRIPC = *On;
+              MSG2 = 'Enter User Department';
+
+            When DUSERMOBNO = ' ' OR %len(%trim(DUSERMOBNO)) <> 10 OR
+             (%subst(DUSERMOBNO:1:1) <> '6' And %subst(DUSERMOBNO:1:1) <> '7' And
+             %subst(DUSERMOBNO:1:1) <> '8' And %subst(DUSERMOBNO:1:1) <> '9')
+             OR (%check('1234567890':DUSERMOBNO) <> 0);
+
+              userMobileNoRIPC = *On;
+              MSG2 = 'Enter or Check User Mobile Number';
+
+            Other;
+
+              USERID = DUSERID;
+              Exsr Input_Data;
+
+              Write SFPFR ;
+              Exsr Clear_All;
+              Exsr Clear_Subfile;
+              Exsr Load_Subfile;
+              MSG1 = 'Record Added';
+              Leave;
+
+            Endsl;
+            iter;
+            Endif;
+
+          Enddo;
+
+        EndSr;
+
+        //=====================================================================//
+        // Edit_User_Detail                                                    //
+        //---------------------------------------------------------------------//
+        Begsr Edit_User_Detail;
+
+          HEADING = 'Edit User Details';
+          FUNFLD = 'F3=Exit          F5=Refresh       F8=Update        F12=Cancel';
+          Exsr Display_Data;
+          Clear MSG2;
+          Exsr Reset_Indicators;
+
+          Dow Exit = *Off;
+
+            EXFMT USRDTL;
+
+            If Exit = *On;
+              Leave;
+            Endif;
+
+            If Refresh = *On;
+              Refresh = *Off;
+              Exsr Display_Data;
               Clear MSG2;
               iter;
             Endif;
@@ -214,6 +297,7 @@
               Leave;
             Endif;
 
+            If UPDATE1 = *On;
             Select;
             When DUSERNAME = *Blanks And
                  DUSERDEP = *Blanks And DUSERMOBNO = *Blanks;
@@ -243,24 +327,22 @@
 
             Other;
 
-              If UPDATE1 = *On;
-
-                Chain DUSERID SFPF001;
-                If %found();
-                  Exsr Input_Data;
-                  Update SFPFR;
-                Endif;
-
-                Exsr Clear_All;
-                Exsr Clear_Subfile;
-                Exsr Load_Subfile;
-                MSG2 = 'Record Updated';
-
+              Chain DUSERID SFPF001;
+              If %found();
+                Exsr Input_Data;
+                Update SFPFR;
               Endif;
+
+              Exsr Clear_All;
+              Exsr Clear_Subfile;
+              Exsr Load_Subfile;
+              MSG1 = 'Record Updated';
+              Leave;
 
             Endsl;
             iter;
 
+          Endif;
           Enddo;
 
         Endsr;
@@ -270,44 +352,35 @@
         //---------------------------------------------------------------------//
         Begsr Delete_User_Detail;
 
-          HEADING = 'Delete User Details';
-          Exsr Display_Data;
+          WOPT = 'N';
+          WUSERID = SUSERID;
+          Clear POPUPMSG;
+          wOptRIPC = *Off;
 
-          Dow Exit = *off;
+          Dow Cancel = *Off;
 
-            userIdPR = *On;
-            userDetailPR = *On;
-            EXFMT USRDTL;
+            Chain SUSERID SFPF001;
+            If %found();
+              EXFMT POPUP;
+              If WOPT = 'N';
+                Cancel = *On;
 
-            Clear MSG2;
-            Exsr Reset_Indicators;
-
-            If Exit = *On;
-              Leave;
-            Endif;
-
-            If Cancel = *On;
-              Cancel = *off;
-              Leave;
-            Endif;
-
-            Chain DUSERID SFPF001;
-
-            If UPDATE1 = *Off;
-
-              If %found();
+              Elseif WOPT = 'Y';
                 Delete SFPFR;
+                Exsr Clear_All;
+                Exsr Clear_Subfile;
+                Exsr Load_Subfile;
+                MSG2 = 'Record Deleted';
+                Cancel = *On;
+
+              Else;
+                Clear WOPT;
+                wOptRIPC = *On;
+                POPUPMSG = 'Enter Valid Option';
+
               Endif;
-
-              Exsr Clear_All;
-              Exsr Clear_Subfile;
-              Exsr Load_Subfile;
-              MSG2 = 'Record Deleted';
-
             Endif;
-
           Enddo;
-
         Endsr;
 
         //=====================================================================//
@@ -315,12 +388,12 @@
         //---------------------------------------------------------------------//
         Begsr Display_User_Detail;
 
-          HEADING = 'Delete User Details';
+          HEADING = 'Display User Details';
+          FUNFLD = 'F3=Exit          F12=Cancel';
           Exsr Display_Data;
 
           Dow Exit = *off;
 
-            userIdPR = *On;
             userDetailPR = *On;
             EXFMT USRDTL;
 
@@ -328,110 +401,19 @@
             Exsr Reset_Indicators;
 
             If Exit = *On;
+              userDetailPR = *Off;
               Leave;
             Endif;
 
             If Cancel = *On;
-              Cancel = *off;
+              Cancel = *Off;
+              userDetailPR = *Off;
               Leave;
             Endif;
 
           Enddo;
 
         Endsr;
-
-        //=====================================================================//
-        // Add_User_Detail = To add new user detail                            //
-        //---------------------------------------------------------------------//
-        Begsr Add_User_Detail;
-
-          HEADING = 'Add User Details';
-          userIdUL = *Off;
-
-          Dow Exit = *Off;
-
-            EXFMT USRDTL;
-            Clear MSG2;
-            Exsr Reset_Indicators;
-
-            If Exit = *On;
-              Leave;
-            Endif;
-
-            If Refresh = *On;
-              Refresh = *Off;
-              Exsr Clear_All;
-              Clear MSG2;
-              iter;
-            Endif;
-
-            If Cancel = *On;
-              Cancel = *Off;
-              Leave;
-            Endif;
-
-            Select;
-            When DUSERID = 0 And DUSERNAME = *Blanks And
-                 DUSERDEP = *Blanks And DUSERMOBNO = *Blanks;
-
-              userIdRIPC = *On;
-              MSG2 = 'Enter User Id, Name, Department & Mobile Number';
-
-            When DUSERID = 0;
-              userIdRIPC = *On;
-              MSG2 = 'Enter User Id';
-
-            When DUSERNAME = ' ' OR
-              (%check('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
-              :%trim(DUSERNAME)) <> 0)
-              OR (%subst(DUSERNAME:1:1) < 'A');
-              userNameRIPC = *On;
-              MSG2 = 'Enter or Check User Name';
-
-            When DUSERDEP = ' ';
-              userDepartmentRIPC = *On;
-              MSG2 = 'Enter User Department';
-
-            When DUSERMOBNO = ' ' OR %len(%trim(DUSERMOBNO)) <> 10 OR
-             (%subst(DUSERMOBNO:1:1) <> '6' And %subst(DUSERMOBNO:1:1) <> '7' And
-             %subst(DUSERMOBNO:1:1) <> '8' And %subst(DUSERMOBNO:1:1) <> '9')
-             OR (%check('1234567890':DUSERMOBNO) <> 0);
-
-              userMobileNoRIPC = *On;
-              MSG2 = 'Enter or Check User Mobile Number';
-
-            Other;
-
-              If UPDATE1 = *Off;
-
-                Exsr Input_Data;
-                USERID = DUSERID;
-                Chain DUSERID SFPF001;
-
-                If %found();
-
-                  userIdRIPC = *On;
-                  MSG2 = 'Duplicate Record Found';
-                  iter;
-
-                Endif;
-
-                Write SFPFR ;
-                Exsr Clear_All;
-                Exsr Clear_Subfile;
-                Exsr Load_Subfile;
-                MSG2 = 'Record Added';
-
-              Endif;
-
-            Endsl;
-            iter;
-
-          Enddo;
-
-          ADD1 = *Off;
-
-        EndSr;
 
         //=====================================================================//
         // Refresh_Subfile                                                     //
@@ -473,7 +455,6 @@
         //---------------------------------------------------------------------//
         Begsr Reset_Indicators;
 
-          userIdRIPC = *Off;
           userNameRIPC = *Off;
           userDepartmentRIPC = *Off;
           userMobileNoRIPC = *Off;
