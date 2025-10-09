@@ -18,6 +18,7 @@
         dcl-s minPos zoned(10:0);
         dcl-s pos zoned(10:0);
         dcl-s inputStr zoned(10);
+        dcl-s ch char(1);
 
         dcl-ds operation;
           Exit IND POS(03);
@@ -50,7 +51,9 @@
 
             for pos = 1 to inputStr;
 
-              if %subst(INSTR:pos:1) <> ' ' AND %subst(INSTR:pos:1) < minChar;
+              ch = %subst(INSTR:pos:1);
+
+              if ch <> ' ' AND ch <= minChar;
 
                 minChar = %subst(INSTR:pos:1);
                 minPos = pos;
