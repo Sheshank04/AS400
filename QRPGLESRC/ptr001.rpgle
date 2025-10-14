@@ -39,9 +39,7 @@
             EXFMT POPUP;
 
             Exsr selectCity;
-            if Cancel = *on;
-              clear CITY;
-            endif;
+            if Cancel =
 
             if Exit = *on;
               leave;

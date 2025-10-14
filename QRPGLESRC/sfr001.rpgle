@@ -22,6 +22,7 @@
         // Data Structure Declaration
         Dcl-DS Operations;
           Exit IND POS(03);
+          Prmpt IND POS(04);
           Refresh IND POS(05);
           ADD1 IND POS(06);
           UPDATE1 IND POS(08);
@@ -31,11 +32,15 @@
           SFLCLR IND POS(33);
           SFLEND IND POS(34);
           optionRIPC IND POS(50);
-          userNameRIPC IND POS(52);
-          userDepartmentRIPC IND POS(53);
-          userMobileNoRIPC IND POS(54);
-          wOptRIPC IND POS(55);
-          userDetailPR IND POS(61);
+          userNameRIPC IND POS(51);
+          userDepartmentRIPC IND POS(52);
+          userMobileNoRIPC IND POS(53);
+          wOptionRIPC IND POS(54);
+          wSelectionRIPC IND POS(55);
+          userDetailPR IND POS(60);
+          promptND IND POS(61);
+          positionToRIPC IND POS(70);
+          userDetailUL IND POS(71);
         End-DS;
 
         Dcl-DS infds1;
@@ -157,10 +162,8 @@
 
             When OPT = '5';
               Exsr Display_User_Detail;
-              If OPT = '5';
-                Clear OPT;
-                Exsr Refresh_Subfile;
-              Endif;
+              Clear OPT;
+              Exsr Refresh_Subfile;
 
             Other;
               If OPT <> *BLANKS;
@@ -210,6 +213,7 @@
               Clear DUSERDEP;
               Clear DUSERMOBNO;
               Clear MSG2;
+              Exsr Reset_Indicators;
               iter;
             Endif;
 
@@ -218,7 +222,13 @@
               Leave;
             Endif;
 
-            If UPDATE1 = *Off;
+            If Prmpt = *On AND FLD = 'DUSERDEP';
+              Exsr Select_Department;
+            Endif;
+
+            If UPDATE1 = *Off AND Prmpt = *Off;
+              UPDATE1 = *On;
+              Exsr Reset_Indicators;
             Select;
             When DUSERNAME = *Blanks And
                  DUSERDEP = *Blanks And DUSERMOBNO = *Blanks;
@@ -259,11 +269,8 @@
               Leave;
 
             Endsl;
-            iter;
             Endif;
-
           Enddo;
-
         EndSr;
 
         //=====================================================================//
@@ -289,6 +296,7 @@
               Refresh = *Off;
               Exsr Display_Data;
               Clear MSG2;
+              Exsr Reset_Indicators;
               iter;
             Endif;
 
@@ -297,7 +305,13 @@
               Leave;
             Endif;
 
+            If Prmpt = *On AND FLD = 'DUSERDEP';
+              Exsr Select_Department;
+            Endif;
+
             If UPDATE1 = *On;
+              UPDATE1 = *Off;
+              Exsr Reset_Indicators;
             Select;
             When DUSERNAME = *Blanks And
                  DUSERDEP = *Blanks And DUSERMOBNO = *Blanks;
@@ -340,11 +354,8 @@
               Leave;
 
             Endsl;
-            iter;
-
           Endif;
           Enddo;
-
         Endsr;
 
         //=====================================================================//
@@ -355,7 +366,7 @@
           WOPT = 'N';
           WUSERID = SUSERID;
           Clear POPUPMSG;
-          wOptRIPC = *Off;
+          wOptionRIPC = *Off;
 
           Dow Cancel = *Off;
 
@@ -375,7 +386,7 @@
 
               Else;
                 Clear WOPT;
-                wOptRIPC = *On;
+                wOptionRIPC = *On;
                 POPUPMSG = 'Enter Valid Option';
 
               Endif;
@@ -395,6 +406,8 @@
           Dow Exit = *off;
 
             userDetailPR = *On;
+            userDetailUL = *On;
+            promptND = *On;
             EXFMT USRDTL;
 
             Clear MSG2;
@@ -402,17 +415,19 @@
 
             If Exit = *On;
               userDetailPR = *Off;
+              userDetailUL = *Off;
+              promptND = *Off;
               Leave;
             Endif;
 
             If Cancel = *On;
               Cancel = *Off;
               userDetailPR = *Off;
+              userDetailUL = *Off;
+              promptND = *Off;
               Leave;
             Endif;
-
           Enddo;
-
         Endsr;
 
         //=====================================================================//
@@ -471,4 +486,47 @@
           DUSERDEP = SUSERDEP;
           DUSERMOBNO = SUSERMOBNO;
 
+        Endsr;
+
+        //=====================================================================//
+        // Select_Department                                                   //
+        //---------------------------------------------------------------------//
+        Begsr Select_Department;
+
+          Clear PROMPTMSG;
+          Clear WSEL;
+          wSelectionRIPC = *Off;
+
+          Dow Cancel = *Off;
+
+          EXFMT PROMPT;
+
+          Select;
+          When WSEL = '1';
+            DUSERDEP = 'RPG';
+            Clear PROMPTMSG;
+            Clear WSEL;
+            wSelectionRIPC = *Off;
+            leavesr;
+
+          When WSEL = '2';
+            DUSERDEP = 'Java';
+            Clear PROMPTMSG;
+            Clear WSEL;
+            wSelectionRIPC = *Off;
+            leavesr;
+
+          When WSEL = '3';
+            DUSERDEP = 'EDI';
+            Clear PROMPTMSG;
+            Clear WSEL;
+            wSelectionRIPC = *Off;
+            leavesr;
+
+          Other;
+            wSelectionRIPC = *On;
+            PROMPTMSG = 'Invalid Selection';
+
+          Endsl;
+        Enddo;
         Endsr;
