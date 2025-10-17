@@ -14,74 +14,76 @@
 **free
         Ctl-Opt Option(*Nodebugio : *Srcstmt);
         dcl-f STDSPF001 workstn INDDS(operation);
-        dcl-s minChar char(1);
-        dcl-s minPos zoned(10:0);
-        dcl-s pos zoned(10:0);
-        dcl-s inputStr zoned(10);
+        dcl-s array char(1) dim(26) ctdata perrcd(26);
+        dcl-s pos1 zoned(2:0) inz;
+        dcl-s pos2 zoned(2:0) inz;
         dcl-s ch char(1);
+        dcl-s counter zoned(2:0) inz(1);
+        dcl-s String varchar(15);
 
         dcl-ds operation;
           Exit IND POS(03);
           Refresh IND POS(05);
-          InputStringRIPC IND POS(10);
         end-ds;
 
         Dow Exit = *off;
 
           EXFMT REC001;
-
-          If Refresh = *on;
-            exsr clearAll;
-            InputStringRIPC = *off;
-            iter;
-          endif;
-
-          If INSTR = ' ';
-
-            clear OUTSTR;
-            InputStringRIPC = *on;
-            MSG = 'Enter String';
-
-          Else;
-
-            minChar = '0';
-            minPos = 0;
-
-            inputStr = %len(%trim(INSTR));
-
-            for pos = 1 to inputStr;
-
-              ch = %subst(INSTR:pos:1);
-
-              if ch <> ' ' AND ch <= minChar;
-
-                minChar = %subst(INSTR:pos:1);
-                minPos = pos;
-
-              endif;
-
-            endfor;
-
-            if minPos > 0;
-
-              %subst(OUTSTR:minPos:1) = minChar;
-              %subst(INSTR:minPos:1) = ' ';
-
-            endif;
-
+          If DINSTRING = *Blanks;
+            DINSTRING = %TRIM(DSTRING);
           Endif;
 
-        enddo;
+          Select;
+            When Exit = *On;
+              Leave;
 
-        *Inlr = *on;
+            When Refresh = *On;
+              Refresh = *Off;
+              Clear DSTRING;
+              Clear DINSTRING;
+              Clear DOUTSTRING;
+              Clear MSG;
+              Reset Counter;
 
-        //=====================================================================//
-        // clearAll - Clear all Data(Refresh)                                  //
-        //---------------------------------------------------------------------//
-        Begsr clearAll;
+            Other;
+              If DSTRING = *Blanks OR
+              (%check('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+              :%trim(DSTRING)) <> 0);
+                iter;
 
-          clear INSTR;
-          clear OUTSTR;
-          clear MSG;
+              Else;
+              String = %TRIM(DSTRING);
 
-        Endsr;
+              Dow Counter <= 26;
+                Pos1 = %SCAN(array(counter):String);
+                Pos2 = %SCANR(array(counter):String);
+                Counter += 1;
+                If POS1 = POS2;
+                  If POS1 > 0;
+                    ch = %SUBST(string:pos1:1);
+                    DINSTRING = %SCANRPL(%SUBST(DINSTRING:pos1:1):'_':DINSTRING);
+                    DOUTSTRING = %REPLACE(ch:DOUTSTRING:pos1:1);
+                    Leave;
+                  Else;
+                    iter;
+                  Endif;
+                Else;
+                  If POS1 > 0;
+                    ch = %SUBST(string:pos1:1);
+                    DINSTRING = %SCANRPL(%SUBST(DINSTRING:pos1:1):'_':DINSTRING);
+                    DOUTSTRING = %REPLACE(ch:DOUTSTRING:pos1:1);
+                    DOUTSTRING = %REPLACE(ch:DOUTSTRING:pos2:1);
+                    Leave;
+                  Else;
+                    iter;
+                  Endif;
+                Endif;
+              Enddo;
+              Endif;
+          Endsl;
+        Enddo;
+
+        *inlr  = *on;
+
+**ctdata array
+ABCDEFGHIJKLMNOPQRSTUVWXYZ

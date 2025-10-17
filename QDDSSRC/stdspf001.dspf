@@ -1,9 +1,9 @@
-     A*%%TS  SD  20251001  022255  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251017  044744  SHESHANK    REL-V7R5M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(24 80 *DS3)
      A                                      INDARA
      A          R REC001
-     A*%%TS  SD  20251001  022255  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251017  044744  SHESHANK    REL-V7R5M0  5770-WDS
      A                                      CF03(03 'Exit')
      A                                      CF05(05 'Refresh')
      A                                  1  8USER
@@ -12,18 +12,21 @@
      A                                  2 72TIME
      A                                  3 25'Dropping Letters Alphabitically'
      A                                      DSPATR(UL)
-     A                                      COLOR(WHT)
+     A                                      COLOR(BLU)
      A                                 23  2'F3 = Exit'
      A                                      COLOR(BLU)
      A            MSG           70A  O 24  2COLOR(WHT)
      A                                 23 13'F5 = Refresh'
      A                                      COLOR(BLU)
-     A                                 10 27'Input String :'
-     A                                 12 27'Output String:'
-     A            INSTR         10A  B 10 42
-     A  10                                  DSPATR(RI)
-     A  10                                  DSPATR(PC)
-     A            OUTSTR        10A  O 12 42
      A                                  1  2'User:'
      A                                  1 66'Date:'
      A                                  2 66'Time:'
+     A                                 10 23'Enter the String :'
+     A                                      COLOR(WHT)
+     A            DSTRING       15   B 10 42
+     A                                 12 23'Input String'
+     A                                      COLOR(WHT)
+     A            DINSTRING     15   O 13 23
+     A                                 12 42'Output String'
+     A                                      COLOR(WHT)
+     A            DOUTSTRING    15   O 13 42

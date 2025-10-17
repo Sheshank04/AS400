@@ -39,7 +39,6 @@
           wSelectionRIPC IND POS(55);
           userDetailPR IND POS(60);
           promptND IND POS(61);
-          positionToRIPC IND POS(70);
           userDetailUL IND POS(71);
         End-DS;
 
@@ -48,6 +47,7 @@
         End-DS;
 
         Dcl-S RRN packed(4:0);
+        Dcl-S v_Counter packed(4:0);
 
         // Main Logic
         Exsr Clear_Subfile;
@@ -74,8 +74,26 @@
         //---------------------------------------------------------------------//
         Begsr Load_Subfile;
 
+          Select;
+          When POSTO <> 0;
+
+          Chain POSTO SFPF001;
+          If %Found;
+          Else;
+            Setll POSTO SFPF001;
+            Read SFPF001;
+            If %EOF(SFPF001);
+              Setll *HIVAL SFPF001;
+              Readp SFPF001;
+            EndIf;
+          EndIf;
+
+          Other;
+
           Setll *LOVAL SFPF001;
           Read SFPF001;
+
+          Endsl;
           Dow Not %EOF(SFPF001);
 
             SUSERID = USERID;
@@ -111,7 +129,6 @@
               SFLDSP = *Off;
             Endif;
 
-            Write HEADER;
             Write FOOTER;
             EXFMT USRSFLCTL;
             Clear MSG1;
@@ -126,6 +143,12 @@
 
             When ADD1 = *On;
               Exsr Add_User_Detail;
+
+            When POSTO <> 0;
+              Exsr Clear_Subfile;
+              Exsr Load_Subfile;
+              POSTO = 0;
+              WRITE USRSFLCTL;
 
             Other;
               Exsr Process_Keys;
@@ -161,8 +184,8 @@
               Exsr Delete_User_Detail;
 
             When OPT = '5';
-              Exsr Display_User_Detail;
               Clear OPT;
+              Exsr Display_User_Detail;
               Exsr Refresh_Subfile;
 
             Other;
@@ -378,7 +401,6 @@
 
               Elseif WOPT = 'Y';
                 Delete SFPFR;
-                Exsr Clear_All;
                 Exsr Clear_Subfile;
                 Exsr Load_Subfile;
                 MSG2 = 'Record Deleted';
