@@ -40,6 +40,7 @@
           userDetailPR IND POS(60);
           promptND IND POS(61);
           userDetailUL IND POS(71);
+          PAGEUP IND POS(90);
         End-DS;
 
         Dcl-DS infds1;
@@ -48,6 +49,8 @@
 
         Dcl-S RRN packed(4:0);
         Dcl-S v_Counter packed(4:0);
+        Dcl-s FirstRRN packed(5:0);
+        Dcl-s i packed(4:0);
 
         // Main Logic
         Exsr Clear_Subfile;
@@ -102,6 +105,11 @@
             SUSERMOBNO = USERMOBNO;
 
             RRN += 1;
+
+            If RRN = 1;
+              FirstRRN = USERID;
+            Endif;
+
             If RRN > 9999;
               Leavesr;
             Endif;
@@ -154,6 +162,10 @@
               Exsr Process_Keys;
 
             Endsl;
+
+            If PAGEUP = *On;
+              Exsr Page_Up;
+            Endif;
 
           Enddo;
 
@@ -551,4 +563,29 @@
 
           Endsl;
         Enddo;
+        Endsr;
+
+        //=====================================================================//
+        // Page_Up                                                             //
+        //---------------------------------------------------------------------//
+        Begsr Page_Up;
+
+          Setll FirstRRN SFPF001;
+          For i = 1 to 8;
+            Readp SFPF001;
+            If %eof(SFPF001);
+
+              SFLEND = *off;
+              Setll *LOVAL SFPF001;
+              Leave;
+
+            Endif;
+          Endfor;
+
+          POSTO = USERID;
+
+          PAGEUP = *off;
+          Exsr Clear_Subfile;
+          Exsr Load_Subfile;
+
         Endsr;
