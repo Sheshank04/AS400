@@ -1,0 +1,6 @@
+                                            UNIQUE
+                R SFLFOLDR
+                  ID             5S 0
+                  NAME          30A
+                  EMAIL         50A
+                K ID

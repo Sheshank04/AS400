@@ -1,4 +1,4 @@
-     A*%%TS  SD  20251016  022928  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251021  032653  SHESHANK    REL-V7R5M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(24 80 *DS3)
      A                                      INDARA
@@ -18,6 +18,7 @@
      A  50                                  DSPATR(PC)
      A          R USRSFLCTL                 SFLCTL(USRSFL)
      A*%%TS  SD  20251016  022928  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      PAGEUP(90 'PAGEUP')
      A                                      OVERLAY
      A  31                                  SFLDSP
      A  32                                  SFLDSPCTL
