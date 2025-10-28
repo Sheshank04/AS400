@@ -17,7 +17,7 @@
 
         // File Declaration
         Dcl-f SFPF001 keyed usage(*input: *output: *update: *delete);
-        Dcl-f SF001 workstn Sfile(USRSFL:RRN) Sfile(DLTSFL:RRN1)
+        Dcl-f SF001 workstn Sfile(USRSFL:USRRRN) Sfile(DLTSFL:DLTRRN)
         indds(Operations) infds(infds1);
 
         // Data Structure Declaration
@@ -40,27 +40,25 @@
           userNameRIPC IND POS(51);
           userDepartmentRIPC IND POS(52);
           userMobileNoRIPC IND POS(53);
-          wOptionRIPC IND POS(54);
           wSelectionRIPC IND POS(55);
           userDetailPR IND POS(60);
           promptND IND POS(61);
           userDetailUL IND POS(71);
           PAGEUP IND POS(90);
           SFLNXTCHGIND IND POS(91);
-          userDetailOff IND POS(80);
         End-DS;
 
         Dcl-DS infds1;
           RecNo int(5) pos(378);
         End-DS;
 
-        Dcl-S RRN packed(4:0);
-        Dcl-S RRN1 packed(4:0);
-        Dcl-s FirstRRN packed(5:0);
-        Dcl-s i packed(4:0);
-        Dcl-s j packed(4:0);
+        Dcl-S USRRRN packed(4:0);
+        Dcl-S DLTRRN packed(4:0);
         Dcl-s FirstKey packed(5:0);
-        Dcl-s Counter char(1);
+        Dcl-s FirstId packed(5:0);
+        Dcl-s Counter1 char(1);
+        Dcl-s Counter2 packed(4:0);
+        Dcl-s Counter3 packed(4:0);
 
         Dcl-S SelCount packed(10:0);
         Dcl-DS SelRecord Dim(100) Qualified;
@@ -72,7 +70,7 @@
         Setll *LOVAL SFPF001;
         Read SFPF001;
         If Not %eof(SFPF001);
-          FirstKey = USERID;
+          FirstId = USERID;
         Endif;
         Exsr Clear_Subfile;
         Exsr Load_Subfile;
@@ -87,7 +85,7 @@
 
           RCDNBR = 1;
           SFLCLR = *On;
-          RRN = 0;
+          USRRRN = 0;
           Write USRSFLCTL;
           SFLCLR = *Off;
 
@@ -125,13 +123,13 @@
             SUSERDEP = USERDEP;
             SUSERMOBNO = USERMOBNO;
 
-            RRN += 1;
+            USRRRN += 1;
 
-            If RRN = 1;
-              FirstRRN = USERID;
+            If USRRRN = 1;
+              FirstKey = USERID;
             Endif;
 
-            If RRN > 9999;
+            If USRRRN > 9999;
               Leavesr;
             Endif;
 
@@ -154,7 +152,7 @@
             SFLDSPCTL = *On;
             SFLEND = *On;
 
-            If RRN < 1;
+            If USRRRN < 1;
               SFLDSP = *Off;
             Endif;
 
@@ -184,7 +182,7 @@
               WRITE USRSFLCTL;
 
             When PAGEUP = *On;
-              If FirstKey = FirstRRN;
+              If FirstId = FirstKey;
                 PAGEUP = *Off;
               Else;
                 Exsr Page_Up;
@@ -192,15 +190,15 @@
 
             Other;
               Exsr Process_Keys;
-              If Counter = 'Y';
-                Counter = ' ';
+              If Counter1 = 'Y';
+                Counter1 = ' ';
                 Exsr Clear_Subfile;
                 Exsr Load_Subfile;
               Endif;
               Setll *LOVAL SFPF001;
               Read SFPF001;
               If Not %eof(SFPF001);
-                FirstKey = USERID;
+                FirstId = USERID;
               Endif;
             Endsl;
           Enddo;
@@ -217,8 +215,13 @@
             RCDNBR = 1;
           Endif;
 
-          If RRN > 0;
+          If USRRRN > 0;
             Readc USRSFL;
+          Endif;
+
+          If optionRIPC = *On;
+            MSG1 = 'Enter Valid Option';
+            Leavesr;
           Endif;
 
           Dow Not %EOF();
@@ -227,7 +230,7 @@
             Select;
               When OPT = '2';
                 Exsr Edit_User_Detail;
-                Counter = 'Y';
+                Counter1 = 'Y';
                 Clear OPT;
 
               When OPT = '4';
@@ -244,6 +247,9 @@
                 If OPT <> *BLANKS;
                   optionRIPC = *On;
                   MSG1 = 'Enter Valid Option';
+                  SFLNXTCHGIND = *ON;
+                  Update USRSFL;
+                  Leave;
                 Endif;
             Endsl;
 
@@ -256,11 +262,13 @@
             Readc USRSFL;
 
           Enddo;
+
           If SelCount > 0;
             Exsr Delete_User_Detail;
             Clear SelCount;
-            Counter = 'Y';
+            Counter1 = 'Y';
           Endif;
+
         Endsr;
 
         //=====================================================================//
@@ -285,6 +293,11 @@
               Leave;
             Endif;
 
+            If Cancel = *On;
+              Cancel = *Off;
+              Leave;
+            Endif;
+
             If Refresh = *On;
               Refresh = *Off;
               Clear DUSERNAME;
@@ -295,60 +308,36 @@
               iter;
             Endif;
 
-            If Cancel = *On;
-              Cancel = *Off;
-              Leave;
-            Endif;
-
             If Prmpt = *On AND FLD = 'DUSERDEP';
-              Exsr Select_Department;
+              If DUSERNAME <> ' ';
+                Exsr Select_Department;
+              Else;
+                userNameRIPC = *On;
+                MSG2 = 'Enter User Name First';
+              Endif;
             Endif;
 
             If UPDATE1 = *Off AND Prmpt = *Off AND ADD1 = *Off;
               UPDATE1 = *On;
-              Exsr Reset_Indicators;
-            Select;
-            When DUSERNAME = *Blanks And
-                 DUSERDEP = *Blanks And DUSERMOBNO = *Blanks;
+              Exsr Validate_User_Input;
 
-              userNameRIPC = *On;
-              MSG2 = 'Enter User Id, Name, Department & Mobile Number';
+              If userNameRIPC = *Off And userDepartmentRIPC = *Off
+              And userMobileNoRIPC = *Off;
 
-            When DUSERNAME = ' ' OR
-              (%check('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
-              :%trim(DUSERNAME)) <> 0)
-              OR (%subst(DUSERNAME:1:1) < 'A');
+                USERID = DUSERID;
+                Exsr Input_Data;
+                Write SFPFR;
+                Exsr Clear_Subfile;
+                Exsr Load_Subfile;
+                Exsr Clear_All;
+                MSG1 = 'Record Added';
+                Leave;
 
-              userNameRIPC = *On;
-              MSG2 = 'Enter or Check User Name';
-
-            When DUSERDEP = ' ';
-
-              userDepartmentRIPC = *On;
-              MSG2 = 'Enter User Department';
-
-            When DUSERMOBNO = ' ' OR %len(%trim(DUSERMOBNO)) <> 10 OR
-             (%subst(DUSERMOBNO:1:1) <> '6' And %subst(DUSERMOBNO:1:1) <> '7' And
-             %subst(DUSERMOBNO:1:1) <> '8' And %subst(DUSERMOBNO:1:1) <> '9')
-             OR (%check('1234567890':DUSERMOBNO) <> 0);
-
-              userMobileNoRIPC = *On;
-              MSG2 = 'Enter or Check User Mobile Number';
-
-            Other;
-
-              USERID = DUSERID;
-              Exsr Input_Data;
-              Write SFPFR ;
-              Exsr Clear_Subfile;
-              Exsr Load_Subfile;
-              Exsr Clear_All;
-              MSG1 = 'Record Added';
-              Leave;
-
-            Endsl;
+              Endif;
             Endif;
+
           Enddo;
+
         EndSr;
 
         //=====================================================================//
@@ -370,6 +359,11 @@
               Leave;
             Endif;
 
+            If Cancel = *On;
+              Cancel = *off;
+              Leave;
+            Endif;
+
             If Refresh = *On;
               Refresh = *Off;
               Exsr Display_Data;
@@ -378,60 +372,69 @@
               iter;
             Endif;
 
-            If Cancel = *On;
-              Cancel = *off;
-              Leave;
-            Endif;
-
             If Prmpt = *On AND FLD = 'DUSERDEP';
-              Exsr Select_Department;
+              If DUSERNAME <> ' ';
+                Exsr Select_Department;
+              Else;
+                userNameRIPC = *On;
+                MSG2 = 'Enter User Name First';
+              Endif;
             Endif;
 
             If UPDATE1 = *On;
               UPDATE1 = *Off;
-              Exsr Reset_Indicators;
-            Select;
-            When DUSERNAME = *Blanks And
-                 DUSERDEP = *Blanks And DUSERMOBNO = *Blanks;
+              Exsr Validate_User_Input;
 
-              userNameRIPC = *On;
-              MSG2 = 'Enter User Name, Department & Mobile Number';
-
-            When DUSERNAME = ' ' OR
-              (%check('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
-              :%trim(DUSERNAME)) <> 0)
-              OR (%subst(DUSERNAME:1:1) < 'A');
-
-              userNameRIPC = *On;
-              MSG2 = 'Enter or Check User Name';
-
-            When DUSERDEP = ' ';
-
-              userDepartmentRIPC = *On;
-              MSG2 = 'Enter User Department';
-
-            When DUSERMOBNO = ' ' OR %len(%trim(DUSERMOBNO)) <> 10 OR
-             (%subst(DUSERMOBNO:1:1) <> '6' And %subst(DUSERMOBNO:1:1) <> '7' And
-             %subst(DUSERMOBNO:1:1) <> '8' And %subst(DUSERMOBNO:1:1) <> '9')
-             OR (%check('1234567890':DUSERMOBNO) <> 0);
-
-              userMobileNoRIPC = *On;
-              MSG2 = 'Enter or Check User Mobile Number';
-
-            Other;
-
-              Chain DUSERID SFPF001;
-              If %found();
-                Exsr Input_Data;
-                Update SFPFR;
+              If userNameRIPC = *Off And userDepartmentRIPC = *Off
+              And userMobileNoRIPC = *Off;
+                Chain DUSERID SFPF001;
+                If %found();
+                  Exsr Input_Data;
+                  Update SFPFR;
+                Endif;
+                Exsr Clear_All;
+                MSG1 = 'Record Updated';
+                Leave;
               Endif;
-              Exsr Clear_All;
-              MSG1 = 'Record Updated';
-              Leave;
 
-            Endsl;
-          Endif;
+            Endif;
+
           Enddo;
+
+        Endsr;
+
+        //=====================================================================//
+        // Validate_User_Input                                                 //
+        //---------------------------------------------------------------------//
+        Begsr Validate_User_Input;
+
+          Exsr Reset_Indicators;
+
+          Select;
+          When DUSERNAME = ' ' And DUSERDEP = ' ' And DUSERMOBNO = ' ';
+            userNameRIPC = *On;
+            MSG2 = 'Enter User Name, Department & Mobile Number';
+
+          When DUSERNAME = ' ' OR
+            (%check('abcdefghiCounter3klmnopqrstuvwxyzABCDEFGHICounter3KLMNOPQRSTUVWXYZ '
+            : %trim(DUSERNAME)) <> 0)
+            OR (%subst(DUSERNAME:1:1) < 'A');
+            userNameRIPC = *On;
+            MSG2 = 'Enter or Check User Name';
+
+          When DUSERDEP = ' ';
+            userDepartmentRIPC = *On;
+            MSG2 = 'Enter User Department';
+
+          When DUSERMOBNO = ' ' OR %len(%trim(DUSERMOBNO)) <> 10 OR
+            (%subst(DUSERMOBNO:1:1) <> '6' And %subst(DUSERMOBNO:1:1) <> '7' And
+              %subst(DUSERMOBNO:1:1) <> '8' And %subst(DUSERMOBNO:1:1) <> '9')
+            OR (%check('1234567890': DUSERMOBNO) <> 0);
+            userMobileNoRIPC = *On;
+            MSG2 = 'Enter or Check User Mobile Number';
+
+          Endsl;
+
         Endsr;
 
         //=====================================================================//
@@ -445,33 +448,84 @@
 
         Endsr;
 
-        //   WOPT = 'N';
-        //   WUSERID = SUSERID;
-        //   Clear POPUPMSG;
-        //   wOptionRIPC = *Off;
+        //=====================================================================//
+        // Delete_Clear                                                        //
+        //---------------------------------------------------------------------//
+        Begsr Delete_Clear;
 
-        //   Dow Cancel = *Off;
+          DLTCLR = *On;
+          DLTRRN = 0;
+          Write DLTSFLCTL;
+          DLTCLR = *Off;
 
-        //     Chain SUSERID SFPF001;
-        //     If %found();
-        //       EXFMT POPUP;
-        //       If WOPT = 'N';
-        //         Cancel = *On;
+        Endsr;
 
-        //       Elseif WOPT = 'Y';
-        //         Delete SFPFR;
-        //         MSG1 = 'Record Deleted';
-        //         Clear *ALL SFPFR;
-        //         Cancel = *On;
+        //=====================================================================//
+        // Delete_Load                                                         //
+        //---------------------------------------------------------------------//
+        Begsr Delete_Load;
 
-        //       Else;
-        //         Clear WOPT;
-        //         wOptionRIPC = *On;
-        //         POPUPMSG = 'Enter Valid Option';
+          For Counter3 = 1 to SelCount;
+            DLTID = SelRecord(Counter3).ID;
+            DLTNAME = SelRecord(Counter3).Name;
+            DLTRRN +=  1;
 
-        //       Endif;
-        //     Endif;
-        //   Enddo;
+            If DLTRRN > 9999;
+              Leavesr;
+            Endif;
+
+            Write DLTSFL;
+
+            If SelCount = Counter3;
+              DLTEND = *On;
+            Else;
+              DLTEND = *Off;
+            Endif;
+
+          Endfor;
+
+        Endsr;
+
+        //=====================================================================//
+        // Delete_Display                                                      //
+        //---------------------------------------------------------------------//
+        Begsr Delete_Display;
+
+          Dow Exit = *Off;
+
+            If Exit = *On;
+              Leave;
+            Endif;
+
+            If Cancel = *On;
+              Cancel = *Off;
+              Leave;
+            Endif;
+
+            DLTDSP = *On;
+            DLTDSPCTL = *On;
+            If DLTRRN <1;
+              DLTDSP = *Off;
+            Endif;
+
+            Write DLTFOOTER;
+            EXFMT DLTSFLCTL;
+
+            For Counter3 = 1 to SelCount;
+              DLTID = SelRecord(Counter3).ID;
+              Chain DLTID SFPF001;
+
+              If %Found;
+                Delete SFPFR;
+              Endif;
+
+            Endfor;
+            MSG1 = 'Record Deleted';
+            Leave;
+
+          Enddo;
+
+        Endsr;
 
         //=====================================================================//
         // Display_User_Detail                                                 //
@@ -506,7 +560,130 @@
               promptND = *Off;
               Leave;
             Endif;
+
           Enddo;
+
+        Endsr;
+
+        //=====================================================================//
+        // Select_Department                                                   //
+        //---------------------------------------------------------------------//
+        Begsr Select_Department;
+
+          Clear PROMPTMSG;
+          Clear WSEL;
+          wSelectionRIPC = *Off;
+
+          Dow Cancel = *Off;
+
+            EXFMT PROMPT;
+
+            Select;
+            When WSEL = '1';
+              DUSERDEP = 'RPG';
+              Exsr Prompt_Validation;
+              leavesr;
+
+            When WSEL = '2';
+              DUSERDEP = 'Java';
+              Exsr Prompt_Validation;
+              leavesr;
+
+            When WSEL = '3';
+              DUSERDEP = 'EDI';
+              Exsr Prompt_Validation;
+              leavesr;
+
+            Other;
+              wSelectionRIPC = *On;
+              PROMPTMSG = 'Invalid Selection';
+
+            Endsl;
+
+          Enddo;
+
+        Endsr;
+
+        //=====================================================================//
+        // Prompt_Validation                                                   //
+        //---------------------------------------------------------------------//
+        Begsr Prompt_Validation;
+
+          userDepartmentRIPC = *Off;
+          Clear MSG2;
+          Clear PROMPTMSG;
+          Clear WSEL;
+          wSelectionRIPC = *Off;
+          Exsr Validate_Fields;
+
+        Endsr;
+
+        //=====================================================================//
+        // Validate_Fields                                                     //
+        //---------------------------------------------------------------------//
+        Begsr Validate_Fields;
+
+          If DUSERNAME <> ' ';
+
+            If (%check('abcdefghiCounter3klmnopqrstuvwxyzABCDEFGHICounter3KLMNOPQRSTUVWXYZ '
+              : %trim(DUSERNAME)) <> 0) OR
+              (%subst(DUSERNAME:1:1) < 'A');
+
+              userNameRIPC = *On;
+              MSG2 = 'Enter or Check User Name';
+
+            Else;
+
+              userNameRIPC = *Off;
+              Clear MSG2;
+
+            Endif;
+
+          Endif;
+
+          If DUSERMOBNO <> ' ';
+
+            If %len(%trim(DUSERMOBNO)) <> 10 OR
+              (%subst(DUSERMOBNO:1:1) <> '6' And %subst(DUSERMOBNO:1:1) <> '7' And
+                %subst(DUSERMOBNO:1:1) <> '8' And %subst(DUSERMOBNO:1:1) <> '9') OR
+              (%check('1234567890': DUSERMOBNO) <> 0);
+
+              userMobileNoRIPC = *On;
+              MSG2 = 'Enter or Check User Mobile Number';
+
+            Else;
+
+              userMobileNoRIPC = *Off;
+              Clear MSG2;
+
+            Endif;
+
+          Endif;
+
+        Endsr;
+
+        //=====================================================================//
+        // Page_Up                                                             //
+        //---------------------------------------------------------------------//
+        Begsr Page_Up;
+
+          Setll FirstKey SFPF001;
+          For Counter2 = 1 to 8;
+            Readp SFPF001;
+            If %eof(SFPF001);
+
+              SFLEND = *off;
+              Setll *LOVAL SFPF001;
+              Leave;
+
+            Endif;
+          Endfor;
+
+          POSTO = USERID;
+          PAGEUP = *off;
+          Exsr Clear_Subfile;
+          Exsr Load_Subfile;
+
         Endsr;
 
         //=====================================================================//
@@ -533,7 +710,7 @@
         Endsr;
 
         //=====================================================================//
-        // Input_Data - Enter Data into the PF                                 //
+        // Input_Data                                                          //
         //---------------------------------------------------------------------//
         Begsr Input_Data;
 
@@ -542,7 +719,6 @@
           USERMOBNO = DUSERMOBNO;
 
         Endsr;
-
 
         //=====================================================================//
         // Reset_Indicators                                                    //
@@ -565,164 +741,4 @@
           DUSERDEP = SUSERDEP;
           DUSERMOBNO = SUSERMOBNO;
 
-        Endsr;
-
-        //=====================================================================//
-        // Select_Department                                                   //
-        //---------------------------------------------------------------------//
-        Begsr Select_Department;
-
-          Clear PROMPTMSG;
-          Clear WSEL;
-          wSelectionRIPC = *Off;
-
-          Dow Cancel = *Off;
-
-          EXFMT PROMPT;
-
-          Select;
-          When WSEL = '1';
-            DUSERDEP = 'RPG';
-            userDepartmentRIPC = *Off;
-            Clear MSG2;
-            Clear PROMPTMSG;
-            Clear WSEL;
-            wSelectionRIPC = *Off;
-            Exsr Validate_Fields;
-            leavesr;
-
-          When WSEL = '2';
-            DUSERDEP = 'Java';
-            userDepartmentRIPC = *Off;
-            Clear MSG2;
-            Clear PROMPTMSG;
-            Clear WSEL;
-            wSelectionRIPC = *Off;
-            Exsr Validate_Fields;
-            leavesr;
-
-          When WSEL = '3';
-            DUSERDEP = 'EDI';
-            userDepartmentRIPC = *Off;
-            Clear MSG2;
-            Clear PROMPTMSG;
-            Clear WSEL;
-            wSelectionRIPC = *Off;
-            Exsr Validate_Fields;
-            leavesr;
-
-          Other;
-            wSelectionRIPC = *On;
-            PROMPTMSG = 'Invalid Selection';
-
-          Endsl;
-
-        Enddo;
-        Endsr;
-
-        //=====================================================================//
-        // Page_Up                                                             //
-        //---------------------------------------------------------------------//
-        Begsr Page_Up;
-
-          Setll FirstRRN SFPF001;
-          For i = 1 to 8;
-            Readp SFPF001;
-            If %eof(SFPF001);
-
-              SFLEND = *off;
-              Setll *LOVAL SFPF001;
-              Leave;
-
-            Endif;
-          Endfor;
-
-          POSTO = USERID;
-          PAGEUP = *off;
-          Exsr Clear_Subfile;
-          Exsr Load_Subfile;
-
-        Endsr;
-
-        //=====================================================================//
-        // Validate_Fields                                                     //
-        //---------------------------------------------------------------------//
-        Begsr Validate_Fields;
-          If (%check('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
-            : %trim(DUSERNAME)) <> 0) OR
-            (%subst(DUSERNAME:1:1) < 'A');
-            userNameRIPC = *On;
-            MSG2 = 'Enter or Check User Name';
-          Else;
-            userNameRIPC = *Off;
-            Clear MSG2;
-          Endif;
-
-          If %len(%trim(DUSERMOBNO)) <> 10 OR
-            (%subst(DUSERMOBNO:1:1) <> '6' And %subst(DUSERMOBNO:1:1) <> '7' And
-              %subst(DUSERMOBNO:1:1) <> '8' And %subst(DUSERMOBNO:1:1) <> '9') OR
-            (%check('1234567890': DUSERMOBNO) <> 0);
-            userMobileNoRIPC = *On;
-            MSG2 = 'Enter or Check User Mobile Number';
-          Else;
-            userMobileNoRIPC = *Off;
-            Clear MSG2;
-          Endif;
-
-        Endsr;
-
-        //=====================================================================//
-        // Delete_Clear                                                        //
-        //---------------------------------------------------------------------//
-        Begsr Delete_Clear;
-          DLTCLR = *On;
-          RRN1 = 0;
-          Write DLTSFLCTL;
-          DLTCLR = *Off;
-        Endsr;
-
-        //=====================================================================//
-        // Delete_Load                                                         //
-        //---------------------------------------------------------------------//
-        Begsr Delete_Load;
-          For j=1 to SelCount;
-          DLTID = SelRecord(j).ID;
-          DLTNAME = SelRecord(j).Name;
-          RRN1 +=  1;
-          IF RRN1 > 9999;
-            Leavesr;
-          Endif;
-          Write DLTSFL;
-          If SelCount = j;
-            DLTEND = *On;
-          Else;
-            DLTEND = *Off;
-          Endif;
-          Endfor;
-        Endsr;
-
-        //=====================================================================//
-        // Delete_Display                                                      //
-        //---------------------------------------------------------------------//
-        Begsr Delete_Display;
-          Dow Exit = *Off;
-
-          If Exit = *On;
-            Leave;
-          Endif;
-
-          If Cancel = *On;
-            Cancel = *Off;
-            Leave;
-          Endif;
-
-          DLTDSP = *On;
-          DLTDSPCTL = *On;
-          If RRN1 <1;
-            DLTDSP = *Off;
-          Endif;
-          Write DLTFOOTER;
-          EXFMT DLTSFLCTL;
-
-          Enddo;
         Endsr;

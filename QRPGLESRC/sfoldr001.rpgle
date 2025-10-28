@@ -2,7 +2,7 @@
      A* CREATED BY.......: Programmers.io @ 2025                               //
      A* CREATE DATE......: 2025/10/21                                          //
      A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: SFOLDFOLD RPGLE Code                                  //
+     A* DESCRIPTION......: SFOLDFOLD RPGLE Code                                //
      A* -----------------------------------------------------------------------//
      A* Modification Log                                                       //
      A* -----------------------------------------------------------------------//
