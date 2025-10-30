@@ -1,4 +1,4 @@
-     A*%%TS  SD  20251028  043335  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251030  033820  SHESHANK    REL-V7R5M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(24 80 *DS3)
      A                                      INDARA
@@ -8,7 +8,8 @@
      A                                      CF08(08 'Update')
      A                                      CF12(12 'Cancel')
      A          R USRSFL                    SFL
-     A*%%TS  SD  20251009  091024  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251030  031051  SHESHANK    REL-V7R5M0  5770-WDS
+     A  91                                  SFLNXTCHG
      A            SUSERID        5Y 0O 11  7EDTCDE(Z)
      A            SUSERNAME     25A  O 11 16
      A            SUSERDEP      10A  O 11 45
@@ -17,15 +18,15 @@
      A  50                                  DSPATR(RI)
      A  50                                  DSPATR(PC)
      A          R USRSFLCTL                 SFLCTL(USRSFL)
-     A*%%TS  SD  20251016  022928  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251030  033820  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      SFLSIZ(9999)
+     A                                      SFLPAG(0008)
      A                                      PAGEUP(90 'PAGEUP')
      A                                      OVERLAY
      A  31                                  SFLDSP
      A  32                                  SFLDSPCTL
      A  33                                  SFLCLR
      A  34                                  SFLEND(*MORE)
-     A                                      SFLSIZ(9999)
-     A                                      SFLPAG(0008)
      A*           RCDNBR         4S 0H      SFLRCDNBR(*TOP)
      A            RCDNBR         4S 0H      SFLRCDNBR(CURSOR)
      A                                  1  8USER
@@ -38,14 +39,13 @@
      A                                  2 66'Time:'
      A                                  2 72TIME
      A                                  2 35'User Details'
-     A                                      DSPATR(UL)
      A                                  6  2'Type Options, Press Enter'
      A                                      COLOR(BLU)
      A                                  7  3'2=Edit  4=Delete  5=Display'
      A                                      COLOR(BLU)
      A                                  6 31' '
-     A                                  4  2'Position To:'
-     A            POSTO          5Y 0I  4 15
+     A                                  4 62'Position To:'
+     A            POSTO          5Y 0I  4 75
      A                                 10  2'Opt'
      A                                      COLOR(WHT)
      A                                 10 10'Id'
@@ -65,7 +65,7 @@
      A                                      COLOR(BLU)
      A                                 23 64' '
      A          R USRDTL
-     A*%%TS  SD  20251010  051842  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251030  033820  SHESHANK    REL-V7R5M0  5770-WDS
      A                                      CF04(04 'Prompt')
      A                                      RTNCSRLOC(&RCD &FLD &POS)
      A                                      OVERLAY
@@ -104,7 +104,7 @@
      A N71                                  DSPATR(UL)
      A            DUSERMOBNO    10A  B 14 41
      A  53                                  DSPATR(RI)
-     A  53                                  DSPATR(PC)
+     A  56                                  DSPATR(PC)
      A  60                                  DSPATR(PR)
      A N71                                  DSPATR(UL)
      A            MSG2          70A  O 24  2COLOR(WHT)
@@ -176,9 +176,10 @@
      A                                      COLOR(WHT)
      A                                  9 11'Name'
      A                                      COLOR(WHT)
-     A          R DLTFOOTER
-     A*%%TS  SD  20251028  043229  SHESHANK    REL-V7R5M0  5770-WDS
      A*                                     OVERLAY
-     A                                 23  2'F12=Cancel'
+     A          R DLTFOOTER
+     A*%%TS  SD  20251030  033820  SHESHANK    REL-V7R5M0  5770-WDS
+     A*                                     OVERLAY
+     A                                 23  2'F3=Exit          F12=Cancel'
      A                                      COLOR(BLU)
      A            DLTMSG        70A  O 24  2COLOR(WHT)

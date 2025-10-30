@@ -39,7 +39,8 @@
           optionRIPC IND POS(50);
           userNameRIPC IND POS(51);
           userDepartmentRIPC IND POS(52);
-          userMobileNoRIPC IND POS(53);
+          userMobileNoRI IND POS(53);
+          userMobileNoPC IND POS(56);
           wSelectionRIPC IND POS(55);
           userDetailPR IND POS(60);
           promptND IND POS(61);
@@ -59,6 +60,7 @@
         Dcl-s Counter1 char(1);
         Dcl-s Counter2 packed(4:0);
         Dcl-s Counter3 packed(4:0);
+        Dcl-s InvalidFound IND;
 
         Dcl-S SelCount packed(10:0);
         Dcl-DS SelRecord Dim(100) Qualified;
@@ -216,15 +218,41 @@
           Endif;
 
           If USRRRN > 0;
+            SFLNXTCHGIND = *ON;
             Readc USRSFL;
           Endif;
 
-          If optionRIPC = *On;
+          InvalidFound = *Off;
+          Dow Not %EOF();
+
+            optionRIPC = *Off;
+
+            If OPT <> '2' and OPT <> '4' and OPT <> '5' and OPT <> *BLANKS;
+
+              optionRIPC = *On;
+              MSG1 = 'Enter Valid Option';
+              InvalidFound = *On;
+
+            Endif;
+
+            SFLNXTCHGIND = *ON;
+            Update USRSFL;
+            Readc USRSFL;
+
+          Enddo;
+
+          If InvalidFound = *On;
             MSG1 = 'Enter Valid Option';
             Leavesr;
           Endif;
 
+          If USRRRN > 0;
+            SFLNXTCHGIND = *ON;
+            Readc USRSFL;
+          Endif;
+
           Dow Not %EOF();
+
             optionRIPC = *Off;
 
             Select;
@@ -243,21 +271,13 @@
                 Exsr Display_User_Detail;
                 Clear OPT;
 
-              Other;
-                If OPT <> *BLANKS;
-                  optionRIPC = *On;
-                  MSG1 = 'Enter Valid Option';
-                  SFLNXTCHGIND = *ON;
-                  Update USRSFL;
-                  Leave;
-                Endif;
             Endsl;
 
             If Exit = *On;
               Leave;
             Endif;
 
-            SFLNXTCHGIND = *ON;
+            SFLNXTCHGIND = *On;
             Update USRSFL;
             Readc USRSFL;
 
@@ -311,6 +331,7 @@
             If Prmpt = *On AND FLD = 'DUSERDEP';
               If DUSERNAME <> ' ';
                 Exsr Select_Department;
+                userMobileNoPC = *On;
               Else;
                 userNameRIPC = *On;
                 MSG2 = 'Enter User Name First';
@@ -322,7 +343,7 @@
               Exsr Validate_User_Input;
 
               If userNameRIPC = *Off And userDepartmentRIPC = *Off
-              And userMobileNoRIPC = *Off;
+              And userMobileNoRI = *Off And userMobileNoPC = *Off;
 
                 USERID = DUSERID;
                 Exsr Input_Data;
@@ -330,7 +351,6 @@
                 Exsr Clear_Subfile;
                 Exsr Load_Subfile;
                 Exsr Clear_All;
-                MSG1 = 'Record Added';
                 Leave;
 
               Endif;
@@ -386,7 +406,7 @@
               Exsr Validate_User_Input;
 
               If userNameRIPC = *Off And userDepartmentRIPC = *Off
-              And userMobileNoRIPC = *Off;
+              And userMobileNoRI = *Off And userMobileNoPC = *Off;
                 Chain DUSERID SFPF001;
                 If %found();
                   Exsr Input_Data;
@@ -416,7 +436,7 @@
             MSG2 = 'Enter User Name, Department & Mobile Number';
 
           When DUSERNAME = ' ' OR
-            (%check('abcdefghiCounter3klmnopqrstuvwxyzABCDEFGHICounter3KLMNOPQRSTUVWXYZ '
+            (%check('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
             : %trim(DUSERNAME)) <> 0)
             OR (%subst(DUSERNAME:1:1) < 'A');
             userNameRIPC = *On;
@@ -430,7 +450,8 @@
             (%subst(DUSERMOBNO:1:1) <> '6' And %subst(DUSERMOBNO:1:1) <> '7' And
               %subst(DUSERMOBNO:1:1) <> '8' And %subst(DUSERMOBNO:1:1) <> '9')
             OR (%check('1234567890': DUSERMOBNO) <> 0);
-            userMobileNoRIPC = *On;
+            userMobileNoRI = *On;
+            userMobileNoPC = *On;
             MSG2 = 'Enter or Check User Mobile Number';
 
           Endsl;
@@ -511,17 +532,19 @@
             Write DLTFOOTER;
             EXFMT DLTSFLCTL;
 
-            For Counter3 = 1 to SelCount;
-              DLTID = SelRecord(Counter3).ID;
-              Chain DLTID SFPF001;
+            If Cancel = *Off;
+              For Counter3 = 1 to SelCount;
+                DLTID = SelRecord(Counter3).ID;
+                Chain DLTID SFPF001;
 
-              If %Found;
-                Delete SFPFR;
-              Endif;
+                If %Found;
+                  Delete SFPFR;
+                Endif;
 
-            Endfor;
-            MSG1 = 'Record Deleted';
-            Leave;
+              Endfor;
+              MSG1 = 'Record Deleted';
+              Leave;
+            Endif;
 
           Enddo;
 
@@ -576,6 +599,20 @@
 
           Dow Cancel = *Off;
 
+            Select;
+            When DUSERDEP = 'RPG';
+              WSEL = '1';
+
+            When DUSERDEP = 'Java';
+              WSEL = '2';
+
+            When DUSERDEP = 'EDI';
+              WSEL = '3';
+
+            Other;
+              WSEL = '1';
+            Endsl;
+
             EXFMT PROMPT;
 
             Select;
@@ -625,7 +662,7 @@
 
           If DUSERNAME <> ' ';
 
-            If (%check('abcdefghiCounter3klmnopqrstuvwxyzABCDEFGHICounter3KLMNOPQRSTUVWXYZ '
+            If (%check('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ '
               : %trim(DUSERNAME)) <> 0) OR
               (%subst(DUSERNAME:1:1) < 'A');
 
@@ -648,12 +685,14 @@
                 %subst(DUSERMOBNO:1:1) <> '8' And %subst(DUSERMOBNO:1:1) <> '9') OR
               (%check('1234567890': DUSERMOBNO) <> 0);
 
-              userMobileNoRIPC = *On;
+              userMobileNoRI = *On;
+              userMobileNoPC = *On;
               MSG2 = 'Enter or Check User Mobile Number';
 
             Else;
 
-              userMobileNoRIPC = *Off;
+              userMobileNoRI = *Off;
+              userMobileNoPC = *Off;
               Clear MSG2;
 
             Endif;
@@ -727,7 +766,8 @@
 
           userNameRIPC = *Off;
           userDepartmentRIPC = *Off;
-          userMobileNoRIPC = *Off;
+          userMobileNoRI = *Off;
+          userMobileNoPC = *Off;
 
         Endsr;
 
