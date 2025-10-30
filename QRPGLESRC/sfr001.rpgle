@@ -81,8 +81,9 @@
         *Inlr = *On;
 
         //=====================================================================//
-        // Clear_Subfile = Clear Sub File                                      //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Clear_Subfile                                          //
+        //  Purpose   : Clear the subfile                                      //
+        //=====================================================================//
         Begsr Clear_Subfile;
 
           RCDNBR = 1;
@@ -94,8 +95,9 @@
         Endsr;
 
         //=====================================================================//
-        // Load_Subfile = Load Sub File                                        //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Load_Subfile                                           //
+        //  Purpose   : Load data from PF to subfile buffer                    //
+        //=====================================================================//
         Begsr Load_Subfile;
 
           Select;
@@ -143,8 +145,9 @@
         Endsr;
 
         //=====================================================================//
-        // Display_Subfile = Display Sub File                                  //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Display_Subfile                                        //
+        //  Purpose   : Display data loaded in buffer to the user              //
+        //=====================================================================//
         Begsr Display_Subfile;
 
           Dow Exit = *Off;
@@ -192,23 +195,27 @@
 
             Other;
               Exsr Process_Keys;
+
               If Counter1 = 'Y';
                 Counter1 = ' ';
                 Exsr Clear_Subfile;
                 Exsr Load_Subfile;
               Endif;
+
               Setll *LOVAL SFPF001;
               Read SFPF001;
               If Not %eof(SFPF001);
                 FirstId = USERID;
               Endif;
+
             Endsl;
           Enddo;
         Endsr;
 
         //=====================================================================//
-        // Process_Keys = To proceed as per option given by user               //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Process_Keys                                           //
+        //  Purpose   : Proceed as per user option (Edit/Delete/Display)       //
+        //=====================================================================//
         Begsr Process_Keys;
 
           If POSTO = 0;
@@ -292,8 +299,9 @@
         Endsr;
 
         //=====================================================================//
-        // Add_User_Detail                                                     //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Add_User_Detail                                        //
+        //  Purpose   : Add new data to PF when F6 is pressed                  //
+        //=====================================================================//
         Begsr Add_User_Detail;
 
           HEADING = 'Add User Details';
@@ -351,6 +359,7 @@
                 Exsr Clear_Subfile;
                 Exsr Load_Subfile;
                 Exsr Clear_All;
+                MSG1 = 'Record Added';
                 Leave;
 
               Endif;
@@ -361,8 +370,9 @@
         EndSr;
 
         //=====================================================================//
-        // Edit_User_Detail                                                    //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Edit_User_Detail                                       //
+        //  Purpose   : Edit selected data when option 2 is chosen             //
+        //=====================================================================//
         Begsr Edit_User_Detail;
 
           HEADING = 'Edit User Details';
@@ -424,8 +434,9 @@
         Endsr;
 
         //=====================================================================//
-        // Validate_User_Input                                                 //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Validate_User_Input                                    //
+        //  Purpose   : Ensure only valid data is moved to PF                  //
+        //=====================================================================//
         Begsr Validate_User_Input;
 
           Exsr Reset_Indicators;
@@ -459,8 +470,9 @@
         Endsr;
 
         //=====================================================================//
-        // Delete_User_Detail                                                  //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Delete_User_Detail                                     //
+        //  Purpose   : Delete selected user detail                            //
+        //=====================================================================//
         Begsr Delete_User_Detail;
 
           Exsr Delete_Clear;
@@ -470,8 +482,9 @@
         Endsr;
 
         //=====================================================================//
-        // Delete_Clear                                                        //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Delete_Clear                                           //
+        //  Purpose   : Clear subfile before delete confirmation               //
+        //=====================================================================//
         Begsr Delete_Clear;
 
           DLTCLR = *On;
@@ -482,8 +495,9 @@
         Endsr;
 
         //=====================================================================//
-        // Delete_Load                                                         //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Delete_Load                                            //
+        //  Purpose   : Load data for delete confirmation                      //
+        //=====================================================================//
         Begsr Delete_Load;
 
           For Counter3 = 1 to SelCount;
@@ -508,8 +522,9 @@
         Endsr;
 
         //=====================================================================//
-        // Delete_Display                                                      //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Delete_Display                                         //
+        //  Purpose   : Display delete confirmation subfile                    //
+        //=====================================================================//
         Begsr Delete_Display;
 
           Dow Exit = *Off;
@@ -534,6 +549,7 @@
 
             If Cancel = *Off;
               For Counter3 = 1 to SelCount;
+
                 DLTID = SelRecord(Counter3).ID;
                 Chain DLTID SFPF001;
 
@@ -551,8 +567,9 @@
         Endsr;
 
         //=====================================================================//
-        // Display_User_Detail                                                 //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Display_User_Detail                                    //
+        //  Purpose   : View data when option 5 is selected                    //
+        //=====================================================================//
         Begsr Display_User_Detail;
 
           HEADING = 'Display User Details';
@@ -589,9 +606,10 @@
         Endsr;
 
         //=====================================================================//
-        // Select_Department                                                   //
-        //---------------------------------------------------------------------//
-        Begsr Select_Department;
+        //  Subroutine: Select_Department                                      //
+        //  Purpose   : Open prompt window to select department (F4)           //
+        //=====================================================================//
+          Begsr Select_Department;
 
           Clear PROMPTMSG;
           Clear WSEL;
@@ -611,6 +629,7 @@
 
             Other;
               WSEL = '1';
+
             Endsl;
 
             EXFMT PROMPT;
@@ -642,8 +661,9 @@
         Endsr;
 
         //=====================================================================//
-        // Prompt_Validation                                                   //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Prompt_Validation                                      //
+        //  Purpose   : Validate selected prompt option                        //
+        //=====================================================================//
         Begsr Prompt_Validation;
 
           userDepartmentRIPC = *Off;
@@ -656,8 +676,9 @@
         Endsr;
 
         //=====================================================================//
-        // Validate_Fields                                                     //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Validate_Fields                                        //
+        //  Purpose   : Validate remaining fields after prompt selection       //
+        //=====================================================================//
         Begsr Validate_Fields;
 
           If DUSERNAME <> ' ';
@@ -702,8 +723,9 @@
         Endsr;
 
         //=====================================================================//
-        // Page_Up                                                             //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Page_Up                                                //
+        //  Purpose   : Handle Page Up using indicator                         //
+        //=====================================================================//
         Begsr Page_Up;
 
           Setll FirstKey SFPF001;
@@ -726,8 +748,9 @@
         Endsr;
 
         //=====================================================================//
-        // Refresh_Subfile                                                     //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Refresh_Subfile                                        //
+        //  Purpose   : Refresh subfile by clearing, loading, and resetting    //
+        //=====================================================================//
         Begsr Refresh_Subfile;
 
           optionRIPC = *Off;
@@ -737,8 +760,9 @@
         Endsr;
 
         //=====================================================================//
-        // Clear_All - Clear all Data                                          //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Clear_All                                              //
+        //  Purpose   : Clear all data after insert or when F5 is pressed      //
+        //=====================================================================//
         Begsr Clear_All;
 
           Clear DUSERID;
@@ -749,8 +773,9 @@
         Endsr;
 
         //=====================================================================//
-        // Input_Data                                                          //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Input_Data                                             //
+        //  Purpose   : Input data into PF from DSPF                           //
+        //=====================================================================//
         Begsr Input_Data;
 
           USERNAME = DUSERNAME;
@@ -760,8 +785,9 @@
         Endsr;
 
         //=====================================================================//
-        // Reset_Indicators                                                    //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Reset_Indicators                                       //
+        //  Purpose   : Turn off indicators                                    //
+        //=====================================================================//
         Begsr Reset_Indicators;
 
           userNameRIPC = *Off;
@@ -772,8 +798,9 @@
         Endsr;
 
         //=====================================================================//
-        // Display_Data                                                        //
-        //---------------------------------------------------------------------//
+        //  Subroutine: Display_Data                                           //
+        //  Purpose   : Display data from subfile to display file              //
+        //=====================================================================//
         Begsr Display_Data;
 
           DUSERID = SUSERID;
