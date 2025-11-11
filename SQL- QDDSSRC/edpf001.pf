@@ -1,0 +1,6 @@
+                                            UNIQUE
+                R EDR
+                  EMPID          5S 0       COLHDG('EMPLOYEE ID')
+                  EMPNAME       40A         COLHDG('EMPLOYEE NAME')
+                  EMPDEPT       20A         COLHDG('EMPLOYEE DEPARTMENT')
+                K EMPID
