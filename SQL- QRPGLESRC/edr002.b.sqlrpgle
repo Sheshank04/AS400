@@ -64,12 +64,6 @@
 
             dsply V_EmployeeName;
 
-          // Exec SQL
-          //   fetch absolute 3 from EmployeeCursor into
-          //   :V_EmployeeId, :V_EmployeeName, :V_EmployeeDept;
-
-          //   dsply V_EmployeeName;
-
         Exec SQL close EmployeeCursor;
 
         *inlr = *on;

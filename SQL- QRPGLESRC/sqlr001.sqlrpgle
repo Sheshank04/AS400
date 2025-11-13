@@ -16,7 +16,12 @@
         Dcl-S  V_Timestamp Timestamp;
         Dcl-S  V_Date1 Date;
         Dcl-S  V_Date2 Varchar(8);
-        Dcl-s V_Charvar Char(30);
+        Dcl-s  V_Charvar Char(30);
+
+        Exec SQL
+          Set option Commit = *None,
+                     Datfmt = *ISO,
+                     Compileopt = 'Option(*Srcstmt)';
 
         //Mainline Calculation
         Exec SQL
