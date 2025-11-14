@@ -1,0 +1,57 @@
+     A*%%TS  SD  20251114  032557  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%EC
+     A                                      INDARA
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CA03(03 'Exit')
+     A*                                     CA05(05 'Refresh')
+     A*                                     CF06(06 'Add')
+     A          R EDSFL                     SFL
+     A*%%TS  SD  20251114  032557  SHESHANK    REL-V7R5M0  5770-WDS
+     A            DOPT           2A  B 10  2
+     A            DEMPID    R        O 10  7REFFLD(EDR/EMPID SHESHANKS/EDPF002)
+     A                                      EDTCDE(Z)
+     A            DEMPNAME  R        O 10 16REFFLD(EDR/EMPNAME SHESHANKS/EDPF00-
+     A                                      2)
+     A            DEMPDEPT  R        O 10 60REFFLD(EDR/EMPDEPT SHESHANKS/EDPF00-
+     A                                      2)
+     A          R EDSFLCTL                  SFLCTL(EDSFL)
+     A*%%TS  SD  20251114  032557  SHESHANK    REL-V7R5M0  5770-WDS
+                                            PAGEDOWN(51 'PAGEDOWN')
+                                            PAGEUP(52 'PAGEUP')
+                                            OVERLAY
+     A  31                                  SFLDSP
+     A  32                                  SFLDSPCTL
+     A  33                                  SFLCLR
+     A  34                                  SFLEND(*MORE)
+     A                                      SFLSIZ(0008)
+     A                                      SFLPAG(0008)
+     A                                  1  2'User:'
+     A                                  1  8USER
+     A                                  1 34'Programmers.ai'
+     A                                      COLOR(WHT)
+     A                                  2 66'Time:'
+     A                                  1 66'Date:'
+     A                                  1 72DATE
+     A                                      EDTCDE(Y)
+     A                                  2 72TIME
+     A                                  2 33'Employee Detail'
+     A                                  4 57'Position To:'
+     A            DPOSTO        10A  I  4 70
+     A                                  6  2'Type Options, Press Enter'
+     A                                      COLOR(BLU)
+     A                                  7  3'2=Edit  3=Copy  4=Delete  5=Displa-
+     A                                      y 7=Rename'
+     A                                      COLOR(BLU)
+     A                                  9  2'Opt'
+     A                                      COLOR(WHT)
+     A                                  9 10'Id'
+     A                                      COLOR(WHT)
+     A                                  9 16'Name'
+     A                                      COLOR(WHT)
+     A                                  9 60'Department'
+     A                                      COLOR(WHT)
+     A          R FOOTER
+     A*%%TS  SD  20251114  031928  SHESHANK    REL-V7R5M0  5770-WDS
+     A                                      OVERLAY
+     A            DMSG1         75A  O 24  2COLOR(WHT)
+     A            DFUNCTION     78A  O 22  2COLOR(BLU)

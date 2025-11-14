@@ -65,4 +65,26 @@
           Enddo;
         Exec SQL close EmployeeCursor2;
 
+        Exec SQL
+
+          Declare EmployeeCursor3 cursor for
+          Select EMPID, EMPNAME, EMPDEPT
+          from EDPF001
+          Order By EMPID DESC;
+
+        Exec SQL open EmployeeCursor3;
+          Dow SQLCODE = 0;
+
+            EXEC SQL fetch from EmployeeCursor3 into
+            :V_EmployeeId, :V_EmployeeName, :V_EmployeeDept;
+
+            If SQLCODE = 100;
+              Leave;
+            Endif;
+
+            dsply V_EmployeeName;
+
+          Enddo;
+        Exec SQL close EmployeeCursor3;
+
         *inlr = *on;

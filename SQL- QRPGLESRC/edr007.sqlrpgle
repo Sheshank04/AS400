@@ -1,15 +1,29 @@
-     A* -----------------------------------------------------------------------//
-     A* CREATED BY.......: Programmers.io @ 2025                               //
-     A* CREATE DATE......: 2025/11/12                                          //
-     A* DEVELOPER........: Sheshank Srivastava                                 //
-     A* DESCRIPTION......: SQLRPGLE WITH HOLD & WITHOUT HOLD Cursor            //
-     A* -----------------------------------------------------------------------//
-     A* Modification Log                                                       //
-     A* -----------------------------------------------------------------------//
-     A* Date     Mod_ID      Developer   Case and Description                  //
-     A* YY/MM/DD ----------  ----------  --------------------------------------//
-     A*                                                                        //
-     A* -----------------------------------------------------------------------//
+**FREE
+ctl-opt dftactgrp(*NO) actgrp(*CALLER);
+
+dcl-s sqlStmt varchar(200);
+dcl-s empDept char(10);
+
+empDept = 'HR';  // Example department to delete
+
+// Build dynamic SQL statement
+sqlStmt = 'DELETE FROM EMPLOYEE WHERE DEPT = ?';
+
+// Prepare the statement
+exec sql
+   PREPARE DelStmt FROM :sqlStmt;
+
+// Execute the prepared statement with parameter
+exec sql
+   EXECUTE DelStmt USING :empDept;
+
+if sqlcode = 0;
+   dsply ('Records deleted successfully for Dept: ' + empDept);
+else;
+   dsply ('Error deleting records. SQLCODE=' + %char(sqlcode));
+endif;
+
+*inlr = *on;
 **free
         //Variable Declaration
         Dcl-S EmployeeId zoned(5:0);

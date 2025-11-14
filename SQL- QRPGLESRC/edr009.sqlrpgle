@@ -17,7 +17,7 @@
         exec sql
           set option commit = *none;
 
-        exec sql declare EmployeeCursor sensitive static scroll cursor for
+        exec sql declare EmployeeCursor static scroll cursor for
             select EMPID, EMPNAME
             from EDPF001
             where EMPNAME = 'Sheshank'

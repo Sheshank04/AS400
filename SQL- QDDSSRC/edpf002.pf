@@ -1,0 +1,9 @@
+                                            UNIQUE
+                R EDR
+                  EMPID          5S 0       COLHDG('EMPLOYEE ID')
+                  EMPNAME       40A         COLHDG('EMPLOYEE NAME')
+                  EMPDEPT       15A         COLHDG('EMPLOYEE DEPARTMENT')
+                  EMPMOB        10S 0       COLHDG('EMPLOYEE MOBILE NO.')
+                  EMPEMAIL      50A         COLHDG('EMPLOYEE EMAIL')
+                  EMPCITY       15A         COLHDG('EMPLOYEE CITY')
+                K EMPID
