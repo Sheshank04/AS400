@@ -1,10 +1,11 @@
-     A*%%TS  SD  20251119  051049  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251120  045848  SHESHANK    REL-V7R5M0  5770-WDS
      A*%%EC
      A                                      DSPSIZ(24 80 *DS3)
      A                                      INDARA
      A                                      CA03(03 'Exit')
      A                                      CA05(05 'Refresh')
      A                                      CF06(06 'Add')
+     A                                      CA12(12 'Cancel')
      A          R EDSFL                     SFL
      A*%%TS  SD  20251118  014913  SHESHANK    REL-V7R5M0  5770-WDS
      A  91                                  SFLNXTCHG
@@ -16,7 +17,7 @@
      A            SEMPDEPT  R        O 10 60REFFLD(EDR/EMPDEPT SHESHANKS/EDPF00-
      A                                      2)
      A          R EDSFLCTL                  SFLCTL(EDSFL)
-     A*%%TS  SD  20251119  040357  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251120  044942  SHESHANK    REL-V7R5M0  5770-WDS
      A                                      SFLSIZ(0008)
      A                                      SFLPAG(0008)
      A                                      PAGEDOWN(51 'PAGEDOWN')
@@ -36,8 +37,8 @@
      A                                      EDTCDE(Y)
      A                                  2 72TIME
      A                                  2 33'Employee Detail'
-     A                                  4 57'Position To:'
-     A            DPOSTO        10A  I  4 70
+     A                                  4  2'Position To:'
+     A            DPOSTO        40A  I  4 15
      A                                  6  2'Type Options, Press Enter'
      A                                      COLOR(BLU)
      A                                  7  3'2=Edit  3=Copy  4=Delete  5=Displa-
@@ -52,11 +53,13 @@
      A                                  9 60'Department'
      A                                      COLOR(WHT)
      A                                  7 49' '
+     A                                  4 57'(Id or Name)'
+     A                                      COLOR(BLU)
      A          R FOOTER
-     A*%%TS  SD  20251114  031928  SHESHANK    REL-V7R5M0  5770-WDS
+     A*%%TS  SD  20251120  045727  SHESHANK    REL-V7R5M0  5770-WDS
      A                                      OVERLAY
      A            DMSG1         75A  O 24  2COLOR(WHT)
-     A            DFUNCTION     78A  O 22  2COLOR(BLU)
+     A            DFUNCTION     78A  O 23  2COLOR(BLU)
      A          R EMPDTL
      A*%%TS  SD  20251119  051049  SHESHANK    REL-V7R5M0  5770-WDS
      A                                  1  2'User:'
