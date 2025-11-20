@@ -152,53 +152,7 @@
               Cancel = *Off;
               Leave;
             Endif;
-
-            If DPOSTO <> *blanks AND PageUp = *off AND PageDown = *off;
-              If %check('0123456789': %trim(DPOSTO)) = 0;
-                V_PosVal = %int(%trim(DPOSTO));
-                Exec Sql
-                  Select EMPID into :V_Check1 from EDPF002
-                  where EMPID >= :V_PosVal
-                  Order By EMPID
-                  limit 1;
-
-                If SQLCODE = 0;
-                  Exsr Fetch_First;
-                  Dow SQLCODE = 0 and V_Id <> V_Check1;
-                    Exsr Fetch_Next;
-                  Enddo;
-                  Exsr Fetch_Prior;
-                Else;
-                  Exsr Fetch_Last;
-                  Exsr Fetch_Prior;
-                EndIf;
-
-              Else;
-                V_PosName = %trim(DPOSTO);
-                Exec Sql
-                  Select EMPNAME into :V_CheckName from EDPF002
-                  where UPPER(EMPNAME) >= UPPER(:V_PosName)
-                  Order By EMPNAME
-                  limit 1;
-
-                If SQLCODE = 0;
-                  Exsr Fetch_First;
-                  Dow SQLCODE = 0 and V_Name <> V_CheckName;
-                    Exsr Fetch_Next;
-                  Enddo;
-                  Exsr Fetch_Prior;
-                Else;
-                  Exsr Fetch_Last;
-                  Exsr Fetch_Prior;
-                EndIf;
-
-              EndIf;
-              SQLCODE = 0;
-              Clear DPOSTO;
-
-              Exsr Subfile_Clear;
-              Exsr Subfile_Load;
-            EndIf;
+            Exsr Position_To;
             Exsr ProcessKeys;
           Enddo;
         Endsr;
@@ -209,7 +163,6 @@
         Begsr ProcessKeys;
 
           Select;
-
             When Pagedown = *on;
               Pagedown = *off;
               If Sflend = *on;
@@ -295,4 +248,58 @@
           Exec SQL
             Fetch last from EmployeeCursor into :V_Id, :V_Name, :V_Department;
 
+        Endsr;
+
+        //=====================================================================//
+        // Position_To                                                         //
+        //---------------------------------------------------------------------//
+        Begsr Position_To;
+
+          If DPOSTO <> *blanks AND PageUp = *off AND PageDown = *off;
+            If %check('0123456789': %trim(DPOSTO)) = 0;
+              V_PosVal = %int(%trim(DPOSTO));
+              Exec Sql
+                Select EMPID into :V_Check1 from EDPF002
+                where EMPID >= :V_PosVal
+                Order By EMPID
+                limit 1;
+
+              If SQLCODE = 0;
+                Exsr Fetch_First;
+                Dow SQLCODE = 0 and V_Id <> V_Check1;
+                  Exsr Fetch_Next;
+                Enddo;
+                Exsr Fetch_Prior;
+              Else;
+                Exsr Fetch_Last;
+                Exsr Fetch_Prior;
+              EndIf;
+
+            Else;
+              V_PosName = %trim(DPOSTO);
+              Exec Sql
+                Select EMPNAME into :V_CheckName from EDPF002
+                where UPPER(EMPNAME) >= UPPER(:V_PosName)
+                //where UPPER(EMPNAME) LIKE '%' || UPPER(:V_PosName) || '%'
+                Order By EMPNAME
+                limit 1;
+
+              If SQLCODE = 0;
+                Exsr Fetch_First;
+                Dow SQLCODE = 0 and V_Name <> V_CheckName;
+                  Exsr Fetch_Next;
+                Enddo;
+                Exsr Fetch_Prior;
+              Else;
+                Exsr Fetch_Last;
+                Exsr Fetch_Prior;
+              EndIf;
+
+            EndIf;
+            SQLCODE = 0;
+            Clear DPOSTO;
+
+            Exsr Subfile_Clear;
+            Exsr Subfile_Load;
+          EndIf;
         Endsr;
