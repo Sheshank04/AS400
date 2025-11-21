@@ -9,8 +9,9 @@
         //=====================================================================//
         // File Declaration                                                    //
         //---------------------------------------------------------------------//
-        dcl-f EDPF002 keyed usage(*input);
-        dcl-f EDDSPF001 workstn Sfile(EDSFL:V_RRN) Indds(Operations);
+        dcl-f EDPF002 keyed usage(*input: *output: *update: *delete);
+        dcl-f EDDSPF001 workstn Sfile(EDSFL:V_RRN) Sfile(CPYSFL:V_CPYRRN)
+        Indds(Operations); //infds(infds1);
 
         //=====================================================================//
         // Data Structure Declaration for Indicators                           //
@@ -23,14 +24,22 @@
           Sfldspctl IND POS(32);
           Sflclr IND POS(33);
           Sflend IND POS(34);
+          Cpydsp IND POS(41);
+          Cpydspctl IND POS(42);
+          Cpyclear IND POS(43);
+          Cpyend IND POS(44);
           Pagedown IND POS(51);
           Pageup IND POS(52);
+          OptionRIPC IND POS(50);
+          NewIdRIPC IND POS(49);
+          Sflnxtchg IND POS(91);
         end-ds;
 
         //=====================================================================//
         // Variable Declaration                                                //
         //---------------------------------------------------------------------//
         dcl-s V_RRN packed(4:0);
+        dcl-s V_CPYRRN packed(4:0);
         dcl-s V_FirstRecord like(V_RRN);
         dcl-s V_Offset like(V_RRN);
         dcl-s V_PosVal int(10);
@@ -38,7 +47,22 @@
         dcl-s V_CheckName char(40);
         dcl-s V_Check1 zoned(5:0);
         dcl-s V_Check2 zoned(5:0);
+        dcl-S V_SelCount packed(10:0);
+        dcl-s V_InvalidFound IND;
+        dcl-s V_Counter1 char(1);
 
+        dcl-ds SelRecord Dim(100) Qualified;
+          ID like(EMPID);
+          Name like(EMPNAME);
+          Department like(EMPDEPT);
+          MobileNo like(EMPMOB);
+          Email like(EMPEMAIL);
+          City like(EMPCITY);
+        end-ds;
+
+        // dcl-ds infds1;
+        //   RecNo int(5) pos(378);
+        // end-ds;
 
         //=====================================================================//
         // Fields for SQL Fetch                                                //
@@ -148,22 +172,23 @@
             Write FOOTER;
             Exfmt EDSFLCTL;
 
-            If Cancel = *On;
+            If Cancel = *On or Exit = *On;
               Cancel = *Off;
               Leave;
             Endif;
             Exsr Position_To;
-            Exsr ProcessKeys;
+            Exsr Function_Keys;
+            Exsr Process_Keys;
           Enddo;
         Endsr;
 
         //=====================================================================//
-        // ProcessKeys                                                         //
+        // Function_Keys                                                       //
         //---------------------------------------------------------------------//
-        Begsr ProcessKeys;
+        Begsr Function_Keys;
 
           Select;
-            When Pagedown = *on;
+            When Pagedown = *on and SOPT = *Blanks;
               Pagedown = *off;
               If Sflend = *on;
                 DMSG1 = 'You are already at the last page.';
@@ -176,7 +201,7 @@
                 Exsr Subfile_Load;
               Endif;
 
-            When Pageup = *on;
+            When Pageup = *on and SOPT = *Blanks;
               Pageup = *off;
               Exec SQL
                 Select EMPID into :V_Check2 from EDPF002
@@ -207,6 +232,7 @@
               DMSG1 = *blanks;
               DPOSTO = *blanks;
               Exsr Fetch_First;
+              Clear SOPT;
 
               Exsr Subfile_Clear;
               Exsr Subfile_Load;
@@ -298,8 +324,86 @@
             EndIf;
             SQLCODE = 0;
             Clear DPOSTO;
+            Clear DMSG1;
 
             Exsr Subfile_Clear;
             Exsr Subfile_Load;
           EndIf;
+        Endsr;
+
+        //=====================================================================//
+        // Process_Keys                                                        //
+        //---------------------------------------------------------------------//
+        Begsr Process_Keys;
+
+          // If %trim(DPOSTO) = ' ';
+          //   RCDNBR = RecNo;
+          // Else;
+          //   RCDNBR = 1;
+          // Endif;
+
+          If V_RRN > 0;
+            Sflnxtchg = *on;
+            Readc EDSFL;
+          Endif;
+
+          V_InvalidFound = *off;
+          Dow Not %EOF();
+
+          optionRIPC = *off;
+
+          If %trim(SOPT) <> '3' and %trim(SOPT) <> *BLANKS;
+            optionRIPC = *On;
+            DMSG1 = 'Enter Valid Option';
+            V_InvalidFound = *On;
+
+          Endif;
+
+          Sflnxtchg = *On;
+          Update EDSFL;
+          Readc EDSFL;
+
+          Enddo;
+
+          If V_InvalidFound = *On;
+            DMSG1 = 'Enter Valid Option';
+            Leavesr;
+          Endif;
+
+          If V_RRN > 0;
+            Sflnxtchg = *On;
+            Readc EDSFL;
+          Endif;
+
+          Dow Not %EOF();
+
+            optionRIPC = *Off;
+            Clear DMSG1;
+
+            Select;
+              When %trim(SOPT) = '3';
+                V_SelCount += 1;
+                SelRecord(V_SelCount).ID = EMPID ;
+                SelRecord(V_SelCount).Name = EMPNAME;
+                SelRecord(V_SelCount).Department = EMPDEPT;
+                SelRecord(V_SelCount).MobileNo = EMPMOB;
+                SelRecord(V_SelCount).Email = EMPEMAIL;
+                SelRecord(V_SelCount).City = EMPCITY;
+
+                Clear SOPT;
+
+            Endsl;
+
+            Sflnxtchg = *On;
+            Update EDSFL;
+            Readc EDSFL;
+
+          Enddo;
+
+          If V_SelCount > 0;
+            //Exsr Copy_Employee_Detail;
+            Clear V_SelCount;
+            V_Counter1 = 'Y';
+          Endif;
+
         Endsr;
